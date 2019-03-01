@@ -1,5 +1,7 @@
 # basic-ts-nodejs-template
 
+![](https://travis-ci.com/Veetaha/basic-ts-nodejs-template.svg?branch=master)
+
 This is a basic template project to start programming with TypeScript and NodeJS.
 
 ## Scripts

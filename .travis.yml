@@ -3,7 +3,7 @@ node_js:
   - "11.9.0"
 
 before_script:
-  - npm install && npm run build-back && npm run test
+  - npm install && npm run build && npm run test
 
 script:
   - npm run test

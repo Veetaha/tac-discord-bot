@@ -8,7 +8,7 @@
         "build": "npm run clean && cd src/backend/ && tsc && ef-tspm && cd ../../",
         "start": "node build/backend/app.js",
         "build-start": "npm run build && npm run start",
-        "test":  "mocha build/backend/tests/run-all.js"
+        "test": "mocha build/backend/tests/run-all.js"
     },
     "repository": {
         "type": "git",
@@ -28,9 +28,10 @@
     "devDependencies": {
         "@ef-carbon/tspm": "^2.2.5",
         "@types/chai": "^4.1.7",
-        "@types/dotenv": "^6.1.0",
-        "@types/mocha": "^5.2.6",
         "@types/colors": "^1.2.1",
+        "@types/dotenv": "^6.1.0",
+        "@types/lodash": "^4.14.121",
+        "@types/mocha": "^5.2.6",
         "@types/node": "^11.10.0",
         "chai": "^4.2.0",
         "mocha": "^6.0.2",

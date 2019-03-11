@@ -27,7 +27,7 @@ npm install
 * `.gitignore` - Git configuration file that defines ignored entries.
 * `package.json` - Global package manager configuration file.
 * `tslint.json` - Global TypeScript linter configuration file.
-* `LICENCE` - MIT open source licence .
+* `LICENCE` - MIT open source licence.
 * `README.md` - File that documents this project.
 * `/common` - A directory that contains code, that may be used on both ends.
     * `/ambient-declarations` - A directory that contains ambient modules declaration files.

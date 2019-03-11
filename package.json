@@ -8,7 +8,8 @@
         "build": "npm run clean && cd backend/ && tsc && ef-tspm && cd ../",
         "start": "node build/backend/app.js",
         "build-start": "npm run build && npm run start",
-        "test": "mocha build/backend/tests/run-all.js"
+        "test": "mocha build/backend/tests/run-all.js",
+        "update-deps": "ncu -u && npm install"
     },
     "repository": {
         "type": "git",
@@ -26,23 +27,24 @@
     },
     "homepage": "https://github.com/Veetaha/basic-ts-nodejs-template#readme",
     "devDependencies": {
-        "@ef-carbon/tspm": "^2.2.5",
-        "@types/chai": "^4.1.7",
-        "@types/colors": "^1.2.1",
-        "@types/dotenv": "^6.1.0",
-        "@types/lodash": "^4.14.121",
-        "@types/mathjs": "^5.0.0",
-        "@types/mocha": "^5.2.6",
-        "@types/node": "^11.10.0",
-        "chai": "^4.2.0",
-        "mocha": "^6.0.2",
-        "typescript": "^3.3.3333"
+        "@ef-carbon/tspm": "latest",
+        "@types/chai": "latest",
+        "@types/colors": "latest",
+        "@types/dotenv": "latest",
+        "@types/lodash": "latest",
+        "@types/mathjs": "latest",
+        "@types/mocha": "latest",
+        "@types/node": "latest",
+        "chai": "latest",
+        "mocha": "latest",
+        "npm-check-updates": "latest",
+        "typescript": "latest"
     },
     "dependencies": {
-        "colors": "^1.3.3",
-        "dotenv": "^6.2.0",
-        "lodash": "^4.17.11",
-        "mathjs": "^5.5.0",
-        "vee-type-safe": "4.0.0"
+        "colors": "latest",
+        "dotenv": "latest",
+        "lodash": "latest",
+        "mathjs": "latest",
+        "vee-type-safe": "latest"
     }
 }

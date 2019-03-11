@@ -14,11 +14,12 @@ npm install
 ## Scripts
 |Command|Description|
 |--|--|
-|`build`      | Compile TypeScript code to `build` directory. |
-|`clean`      | Remove build directory.                                          |
-|`start`      | Execute your compiled NodeJS app.                                |
-|`build-start`| Build and run your app instantly.                                |
-|`test`       | Run all your unit tests.                                         |
+|`build`      | Compile TypeScript code to `build` directory.      |
+|`clean`      | Remove build directory.                            |
+|`start`      | Execute your compiled NodeJS app.                  |
+|`build-start`| Build and run your app instantly.                  |
+|`test`       | Run all your unit tests.                           |
+|`update-deps`| Update all your dependencies to the latest version |
 
 
 ## File structure

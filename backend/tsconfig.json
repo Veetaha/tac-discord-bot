@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "outDir": "./../../build",
+        "outDir": "./../build",
         "typeRoots": [
-            "../../node_modules/@types", "../common/ambient-declarations"
+            "../node_modules/@types", "../common/ambient-declarations"
         ],
         "baseUrl": ".",
         "paths": {

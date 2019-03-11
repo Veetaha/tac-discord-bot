@@ -5,7 +5,7 @@
     "main": "build/baackend/app.js",
     "scripts": {
         "clean": "rm -rf build",
-        "build": "npm run clean && cd src/backend/ && tsc && ef-tspm && cd ../../",
+        "build": "npm run clean && cd backend/ && tsc && ef-tspm && cd ../",
         "start": "node build/backend/app.js",
         "build-start": "npm run build && npm run start",
         "test": "mocha build/backend/tests/run-all.js"
@@ -43,6 +43,6 @@
         "dotenv": "^6.2.0",
         "lodash": "^4.17.11",
         "mathjs": "^5.5.0",
-        "vee-type-safe": "^3.2.0"
+        "vee-type-safe": "4.0.0"
     }
 }

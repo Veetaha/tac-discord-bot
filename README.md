@@ -3,7 +3,7 @@
 ![](https://travis-ci.com/Veetaha/basic-ts-nodejs-template.svg?branch=master)
 
 This is a basic template project to start programming with TypeScript and NodeJS.
-To get started use this commands:
+To get started use these commands (`project-dir` is the name of the directory to copy this template to):
 
 ```bash
 git clone https://github.com/Veetaha/basic-ts-nodejs-template.git project-dir

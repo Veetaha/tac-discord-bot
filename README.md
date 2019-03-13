@@ -1,6 +1,6 @@
 # basic-ts-nodejs-template
 
-![](https://travis-ci.com/Veetaha/basic-ts-nodejs-template.svg?branch=master)
+[![Build Status](https://travis-ci.com/Veetaha/basic-ts-nodejs-template.svg?branch=master)](https://travis-ci.com/Veetaha/basic-ts-nodejs-template)
 
 This is a basic template project to start programming with TypeScript and NodeJS.
 To get started use these commands (`project-dir` is the name of the directory to copy this template to):

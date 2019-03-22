@@ -38,13 +38,14 @@
         "chai": "latest",
         "mocha": "latest",
         "npm-check-updates": "latest",
-        "typescript": "latest"
+        "typescript": "3.2.4"
     },
     "dependencies": {
         "colors": "latest",
         "dotenv": "latest",
         "lodash": "latest",
         "mathjs": "latest",
+        "ts-typedefs": "latest",
         "vee-type-safe": "latest"
     }
 }

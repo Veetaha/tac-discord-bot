@@ -1,1 +1,1 @@
-export { Maybe } from 'vee-type-safe';
+export * from 'ts-typedefs';

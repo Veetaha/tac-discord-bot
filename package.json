@@ -5,10 +5,10 @@
     "main": "build/baackend/app.js",
     "scripts": {
         "clean": "rm -rf build",
-        "build": "npm run clean && cd backend/ && tsc && ef-tspm && cd ../",
-        "start": "node build/backend/app.js",
+        "build": "npm run clean && cd backend && tsc && cd ..",
         "build-start": "npm run build && npm run start",
-        "test": "mocha build/backend/tests/run-all.js",
+        "start": "node -r ./scripts/module-alias-register.js build/backend/app.js",
+        "test": "mocha -r ./scripts/module-alias-register.js build/backend/tests/run-all.js",
         "update-deps": "ncu -u && npm install"
     },
     "repository": {
@@ -27,7 +27,6 @@
     },
     "homepage": "https://github.com/Veetaha/basic-ts-nodejs-template#readme",
     "devDependencies": {
-        "@ef-carbon/tspm": "latest",
         "@types/chai": "latest",
         "@types/colors": "latest",
         "@types/dotenv": "latest",
@@ -38,13 +37,14 @@
         "chai": "latest",
         "mocha": "latest",
         "npm-check-updates": "latest",
-        "typescript": "3.2.4"
+        "typescript": "latest"
     },
     "dependencies": {
         "colors": "latest",
         "dotenv": "latest",
         "lodash": "latest",
         "mathjs": "latest",
+        "module-alias": "latest",
         "ts-typedefs": "latest",
         "vee-type-safe": "latest"
     }

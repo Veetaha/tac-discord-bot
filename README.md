@@ -30,6 +30,7 @@ npm install
 * `tslint.json` - Global TypeScript linter configuration file.
 * `LICENCE` - MIT open source licence.
 * `README.md` - File that documents this project.
+* `/scripts` - A directory that contains any handy bash/js/python scripts or whatever.
 * `/common` - A directory that contains code, that may be used on both ends.
     * `/ambient-declarations` - A directory that contains ambient modules declaration files.
     * `interfaces.ts` - File that exports some handy `type` and `interface` definitions.

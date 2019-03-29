@@ -11,18 +11,18 @@
             "@app/*":     [ "./*"         ],
             "@common/*":  [ "../common/*" ]
         },
-        "target":           "es2018",  // es-tspm package currently supports ^es2018
+        "target":           "esnext",  
         "lib":              ["esnext"],
         "module":           "commonjs",
         "moduleResolution": "node",
-        "sourceMap":      false, // es-tspm distorts source mappings, so there is no use
+        "sourceMap":      false,
         "declaration":    false, 
         "declarationMap": false, 
         "esModuleInterop":              true, 
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata":  true,
-        /* Checking severity level */
+        
         "strict":                           true,
         "noUnusedLocals":                   true,
         "noUnusedParameters":               true,
@@ -37,7 +37,7 @@
         "strictPropertyInitialization":     true,
         "allowUnreachableCode":             false,
         "forceConsistentCasingInFileNames": true,
-        /* Misc */
+        
         "alwaysStrict": true,
         "pretty":       true
     },

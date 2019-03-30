@@ -14,7 +14,7 @@ npm install
 ## Scripts
 |Command|Description|
 |--|--|
-|`dev`        | Execite your app with ts-node and restart it on file changes. |
+|`dev`        | Execute your app with ts-node and restart it on file changes. |
 |`start`      | Execute your app with ts-node.                                |
 |`test`       | Run all your unit tests.                                      |
 |`update-deps`| Update all your dependencies to the latest version            |
@@ -30,7 +30,7 @@ npm install
 * `README.md` - File that documents this project.
 * `/common` - A directory that contains code, that may be used on both ends.
     * `/ambient-declarations` - A directory that contains ambient modules declaration files.
-    * `interfaces.ts` - File that exports some handy `type` and `interface` definitions.
+    * `interfaces.ts` - File that exports some commonplace `type` and `interface` definitions.
 * `/backend` - A directory where resides all your NodeJS code.
     * `tsconfig.json` - TypeScript compiler configuration file. It is set up to provide the most severe type checks level by default.
     * `app.ts` - Your NodeJS app entry point.

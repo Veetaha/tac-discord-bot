@@ -34,9 +34,11 @@ npm install
 * `/backend` - A directory where resides all your NodeJS code.
     * `tsconfig.json` - TypeScript compiler configuration file. It is set up to provide the most severe type checks level by default.
     * `app.ts` - Your NodeJS app entry point.
+    * `/interfaces` - A directory that contains your type and interfaces declarations.
+        * `index.ts` - File the reexports all interfaces defined in this directory. 
+        It exports only backend-related type definitions and reexports `@common/interfaces`.
     * `/modules` - A directory that contains your app modules (classes, utils functions etc.)
         * `debug.ts` - Example module that provides basic logging and assertions functionality.
-        * `interfaces.ts` - File that exports only backend-related type definitions and reexports `@common/interfaces`.
     * `/tests` - A directory that contains all your unit tests.
         * `run-all.ts` - A script that runs all the tests that reside in this folder.
 * `/frontend` - Add your frontend here...

@@ -4,11 +4,9 @@
     "description": "Basic template project to start programming with TypeScript and NodeJS",
     "main": "build/baackend/app.js",
     "scripts": {
-        "clean": "rm -rf build",
-        "build": "npm run clean && cd backend && tsc && cd ..",
-        "build-start": "npm run build && npm run start",
-        "start": "node -r ./scripts/module-alias-register.js build/backend/app.js",
-        "test": "mocha -r ./scripts/module-alias-register.js build/backend/tests/run-all.js",
+        "dev":   "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
+        "start": "cd backend && ts-node -r tsconfig-paths/register app.ts",
+        "test":  "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
         "update-deps": "ncu -u && npm install"
     },
     "repository": {
@@ -33,10 +31,15 @@
         "@types/lodash": "latest",
         "@types/mathjs": "latest",
         "@types/mocha": "latest",
+        "@types/module-alias": "^2.0.0",
         "@types/node": "latest",
         "chai": "latest",
         "mocha": "latest",
+        "nodemon": "latest",
         "npm-check-updates": "latest",
+        "npm-run-all": "latest",
+        "ts-node-dev": "^1.0.0-pre.32",
+        "tslint": "latest",
         "typescript": "latest"
     },
     "dependencies": {
@@ -45,7 +48,10 @@
         "lodash": "latest",
         "mathjs": "latest",
         "module-alias": "latest",
+        "reflect-metadata": "^0.1.13",
+        "ts-node": "^8.0.3",
         "ts-typedefs": "latest",
+        "tsconfig-paths": "^3.8.0",
         "vee-type-safe": "latest"
     }
 }

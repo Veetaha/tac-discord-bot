@@ -1,11 +1,9 @@
 {
     "defaultSeverity": "error",
-    "jsRules": {
-    },
     "rules": {              
         "no-var-keyword": true,
         "no-arg": true,
-        "triple-equals": [true, "allow-null-check"], // obj == null is valid
+        "triple-equals": [true, "allow-null-check"],
         "semicolon": true,
         "adjacent-overload-signatures": true,
         "await-promise": true,
@@ -29,7 +27,6 @@
         "no-floating-promises": true,
         "no-inferred-empty-object-type": true,
         "strict-type-predicates": false,
-        "restrict-plus-operands": true,
-    },
-    "rulesDirectory": []
+        "restrict-plus-operands": true
+    }
 }

@@ -14,12 +14,10 @@ npm install
 ## Scripts
 |Command|Description|
 |--|--|
-|`build`      | Compile TypeScript code to `build` directory.      |
-|`clean`      | Remove build directory.                            |
-|`start`      | Execute your compiled NodeJS app.                  |
-|`build-start`| Build and run your app instantly.                  |
-|`test`       | Run all your unit tests.                           |
-|`update-deps`| Update all your dependencies to the latest version |
+|`dev`        | Execite your app with ts-node and restart it on file changes. |
+|`start`      | Execute your app with ts-node.                                |
+|`test`       | Run all your unit tests.                                      |
+|`update-deps`| Update all your dependencies to the latest version            |
 
 
 ## File structure
@@ -30,7 +28,6 @@ npm install
 * `tslint.json` - Global TypeScript linter configuration file.
 * `LICENCE` - MIT open source licence.
 * `README.md` - File that documents this project.
-* `/scripts` - A directory that contains any handy bash/js/python scripts or whatever.
 * `/common` - A directory that contains code, that may be used on both ends.
     * `/ambient-declarations` - A directory that contains ambient modules declaration files.
     * `interfaces.ts` - File that exports some handy `type` and `interface` definitions.

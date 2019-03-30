@@ -2,11 +2,11 @@
     "name": "basic-ts-nodejs-template",
     "version": "1.0.0",
     "description": "Basic template project to start programming with TypeScript and NodeJS",
-    "main": "build/baackend/app.js",
+    "main": "build/backend/app.ts",
     "scripts": {
-        "dev":   "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
+        "dev": "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
         "start": "cd backend && ts-node -r tsconfig-paths/register app.ts",
-        "test":  "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
+        "test": "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
         "update-deps": "ncu -u && npm install"
     },
     "repository": {
@@ -45,10 +45,10 @@
         "dotenv": "latest",
         "lodash": "latest",
         "mathjs": "latest",
-        "reflect-metadata": "^0.1.13",
-        "ts-node": "^8.0.3",
+        "reflect-metadata": "latest",
+        "ts-node": "latest",
         "ts-typedefs": "latest",
-        "tsconfig-paths": "^3.8.0",
+        "tsconfig-paths": "latest",
         "vee-type-safe": "latest"
     }
 }

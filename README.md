@@ -17,7 +17,7 @@ npm install
 |`dev`        | Execute your app with ts-node and restart it on file changes. |
 |`start`      | Execute your app with ts-node.                                |
 |`test`       | Run all your unit tests.                                      |
-|`update-deps`| Update all your dependencies to the latest version            |
+|`update-deps`| Update all your dependencies to the latest version.           |
 
 
 ## File structure

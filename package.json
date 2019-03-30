@@ -4,9 +4,10 @@
     "description": "Basic template project to start programming with TypeScript and NodeJS",
     "main": "build/backend/app.ts",
     "scripts": {
-        "dev": "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
-        "start": "cd backend && ts-node -r tsconfig-paths/register app.ts",
-        "test": "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
+        "dev":         "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
+        "start":       "cd backend && ts-node -r tsconfig-paths/register app.ts",
+        "start:debug": "cd backend && node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect app.ts",
+        "test":        "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
         "update-deps": "ncu -u && npm install"
     },
     "repository": {

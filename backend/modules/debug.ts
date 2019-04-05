@@ -67,7 +67,7 @@ export function shutdown(payload: unknown = 'undefined behaviour', description =
 /**
  * Checks that `Boolean(truthy) === true`, otherwise shutdowns and logs `truthy`.
  * 
- * @param truthy Suspect to be check for truthiness.
+ * @param truthy Suspect to be checked for truthiness.
  */
 export function assert(truthy: unknown) {
     if (!truthy) {
@@ -78,7 +78,7 @@ export function assert(truthy: unknown) {
 /**
  * Checks that `Boolean(truthy) === false`, otherwise shutdowns and logs `falsy`.
  * 
- * @param falsy Suspect to be check for truthiness.
+ * @param falsy Suspect to be checked for truthiness.
  */
 assert.falsy = (falsy: unknown) => {
     if (falsy) {

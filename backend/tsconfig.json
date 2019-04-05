@@ -6,7 +6,6 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@models/*":  [ "models/*"    ],
             "@modules/*": [ "modules/*"   ],
             "@app/*":     [ "./*"         ],
             "@common/*":  [ "../common/*" ]

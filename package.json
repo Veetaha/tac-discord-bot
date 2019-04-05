@@ -27,7 +27,6 @@
     "homepage": "https://github.com/Veetaha/basic-ts-nodejs-template#readme",
     "devDependencies": {
         "@types/chai": "latest",
-        "@types/colors": "latest",
         "@types/dotenv": "latest",
         "@types/lodash": "latest",
         "@types/mathjs": "latest",

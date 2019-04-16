@@ -1,4 +1,6 @@
 import '@app/polyfills';
-import { Log } from '@modules/debug';
+import * as Joi from 'typesafe-joi';
+import { Log, assert } from '@modules/debug';
 
+assert.matches(true, Joi.bool());
 Log.info('Hello world!!');

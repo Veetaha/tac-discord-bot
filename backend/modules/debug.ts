@@ -1,5 +1,5 @@
 import Colors from 'colors/safe'; // import it only this way (https://github.com/Microsoft/TypeScript/issues/29687)
-import * as Vts from 'vee-type-safe';
+import * as Joi from 'typesafe-joi';
 
 export namespace Log {
     function logCurrentTime() {
@@ -88,15 +88,15 @@ assert.falsy = (falsy: unknown) => {
 
 
 /**
- * Checks that `Vts.mismatch(suspect, typeDescr) === null`, otherwise shutdowns
- * and logs returned `MismatchInfo` object.
+ * Asserts that `Joi.validate(suspect, schema).error == null`, otherwise shutdowns
+ * and logs returned `Joi.ValidateError` object.
  * 
  * @param suspect   Value of to be checked for type conformance.
- * @param typeDescr `Vts.TypeDesciption` that `suspect` will be checked to match to.
+ * @param typeDescr `Joi.Schema` that `suspect` will be checked to match to.
  */
-assert.matches = (suspect: unknown, typeDescr: Vts.TypeDescription) => {
-    const mismatch = Vts.mismatch(suspect, typeDescr);
-    if (mismatch) {
-        shutdown(mismatch, 'type mismatch assertion failure');
+assert.matches = (suspect: unknown, schema: Joi.Schema) => {
+    const { error } = Joi.validate(suspect, schema);
+    if (error) {
+        shutdown(error, 'type mismatch assertion failure');
     }
 };

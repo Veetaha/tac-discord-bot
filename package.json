@@ -4,10 +4,10 @@
     "description": "Basic template project to start programming with TypeScript and NodeJS",
     "main": "build/backend/app.ts",
     "scripts": {
-        "dev":         "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
-        "start":       "cd backend && ts-node -r tsconfig-paths/register app.ts",
+        "dev": "cd backend && ts-node-dev --respawn -r tsconfig-paths/register app.ts",
+        "start": "cd backend && ts-node -r tsconfig-paths/register app.ts",
         "start:debug": "cd backend && node -r ts-node/register -r tsconfig-paths/register --nolazy --inspect app.ts",
-        "test":        "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
+        "test": "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
         "update-deps": "ncu -u && npm install"
     },
     "repository": {
@@ -38,17 +38,18 @@
         "npm-check-updates": "latest",
         "ts-node-dev": "latest",
         "tslint": "latest",
-        "typescript": "latest"
+        "typescript": "^3.5.0-dev.20190416"
     },
     "dependencies": {
         "colors": "latest",
         "dotenv": "latest",
+        "joi": "latest",
         "lodash": "latest",
         "mathjs": "latest",
         "reflect-metadata": "latest",
         "ts-node": "latest",
         "ts-typedefs": "latest",
         "tsconfig-paths": "latest",
-        "vee-type-safe": "latest"
+        "typesafe-joi": "latest"
     }
 }

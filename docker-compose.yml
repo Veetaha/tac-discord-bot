@@ -1,0 +1,7 @@
+version: '3'
+services: 
+    tac-discord-bot:
+        build: .
+        ports:
+            - ${PORT}:${PORT}
+        env_file: .env

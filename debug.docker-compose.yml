@@ -1,0 +1,11 @@
+version: '3'
+services: 
+    tac-discord-bot-debug:
+        build:
+            context: '.'
+            dockerfile: debug.dockerfile
+        volumes:
+            - .:/home/${USER}/my/projects/tac-discord-bot
+        ports:
+            - ${PORT}:${PORT}
+        env_file: .env

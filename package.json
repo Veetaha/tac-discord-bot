@@ -32,6 +32,7 @@
         "@types/mathjs": "latest",
         "@types/mocha": "latest",
         "@types/node": "latest",
+        "@types/node-fetch": "^2.3.7",
         "chai": "latest",
         "mocha": "latest",
         "nodemon": "latest",
@@ -43,14 +44,20 @@
     "dependencies": {
         "@hapi/joi": "^15.1.0",
         "colors": "latest",
+        "discord.js": "^11.5.1",
         "dotenv": "latest",
         "joi": "latest",
         "lodash": "latest",
         "mathjs": "latest",
+        "moment": "^2.24.0",
+        "node-fetch": "^2.6.0",
+        "node-opus": "^0.3.2",
         "reflect-metadata": "latest",
+        "sodium": "^3.0.2",
         "ts-node": "latest",
-        "ts-typedefs": "latest",
+        "ts-typedefs": "^3.0.0",
         "tsconfig-paths": "latest",
+        "typedi": "^0.8.0",
         "typesafe-joi": "latest"
     }
 }

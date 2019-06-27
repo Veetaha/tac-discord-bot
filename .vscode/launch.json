@@ -5,23 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name":    "TS Node (Launch)",
-            "type":    "node",
-            "request": "launch",
-            "cwd":   "${workspaceFolder}/backend",
-            "args": ["${workspaceFolder}/backend/app.ts"],
-            "runtimeArgs": [
-                "--nolazy",  
-                "-r", "ts-node/register",
-                "-r", "tsconfig-paths/register"
-            ],
-            "protocol": "inspector"
-        },
-        {
-            "name": "TS Node (Attach)",
             "type": "node",
             "request": "attach",
-            "protocol": "inspector"
+            "name": "Attach",
+            "skipFiles": [ 
+                "timers.js",
+                "async_hooks.js", 
+                "inspector_async_hook.js",
+                "fs.js"
+            ],
+            "protocol": "inspector",
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "${workspaceFolder}"
         }
     ]
 }

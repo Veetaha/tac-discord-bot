@@ -70,9 +70,13 @@ export class DiscordCmdHandlerBuilder {
 
     buildMessageHandler(): DiscordMsgHandlerFn {
         return msg => void this.tryInvokeCmdHandlerForMessage(msg)
-            .catch(err => DiscordCmdHandlerBuilder.log.error(err, "error while handling message"));
+            .catch(async err => {
+                DiscordCmdHandlerBuilder.log.error(err.message, "error while handling message");
+                await msg.reply(`Error: ${err.message}`);
+            });
     }   
     private async tryInvokeCmdHandlerForMessage(msg: Discord.Message){
+        if (msg.author.bot) return;
         const msgContent = msg.content.trim();
         if (!msgContent.startsWith(this.cmdPrefix)) return;
 
@@ -85,14 +89,14 @@ export class DiscordCmdHandlerBuilder {
     }    
     private getCmdAndParamsFromMsgContent(msgContent: string) {
         const unprefixedMsg = msgContent.slice(this.cmdPrefix.length);
-        let cmdEndIndex = unprefixedMsg.search(/\W/);
+        let cmdEndIndex = unprefixedMsg.search(/[^\w\d_-]/i);
         if (cmdEndIndex < 0) {
             cmdEndIndex = unprefixedMsg.length;
         }
-        const params = unprefixedMsg.slice(cmdEndIndex);
+        const params = unprefixedMsg.slice(cmdEndIndex).trimStart();
         return {
             cmd:    unprefixedMsg.slice(0, cmdEndIndex),
-            params: params === '' ? [] : params.split(/s+/)
+            params: params === '' ? [] : params.split(/\s+/)
         };
     }
 }

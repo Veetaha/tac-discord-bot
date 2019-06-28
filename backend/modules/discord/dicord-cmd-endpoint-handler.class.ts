@@ -89,10 +89,10 @@ export class DiscordCmdEndpointHandler implements DiscordCmdEndpointMetadataItem
     private trySetCooldownOrFail(memberId: string, cmd: string) {
         const lastInvokeTime = this.userIdToLastInvokeTimeMap!.get(memberId);
         if (lastInvokeTime == null) {
-            this.setCooldownForMemberWithId(memberId);
+            return this.setCooldownForMemberWithId(memberId);
         }
         throw new Error(
-            `you have to wait ${Moment().to(lastInvokeTime)} till the next call to "${cmd}"`
+            `you will be able to call "${cmd}" ${Moment().to(lastInvokeTime + this.cooldownTime!)}`
         );
     }
 

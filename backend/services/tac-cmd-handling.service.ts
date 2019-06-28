@@ -20,15 +20,22 @@ export class TacCmdHandlingService {
     
     @DiscordCmdEndpoint({
         cmd: ['pony'],
-        description: `Replies with a random pony image.`
+        description: `Replies with a random pony image.`,
+        cooldownTime: 15000
     })
     async onPony({msg}: DiscordCmdHandlerFnCtx){
-    
+        const pony = await this.thePonyApi.fetchRanomPonyImgUrl();
+        if (pony.tags.length > 5) {
+            pony.tags.splice(5);
+        }
 
         return msg.reply(new Discord.RichEmbed()
-            .setImage(await this.thePonyApi.fetchRanomPonyImgUrl())
+            .setImage(pony.representations.full)
+            .setTitle(`Random pony for ${msg.member.displayName}`)
+            .setDescription(pony.tags.map(tag => `#${tag}`))
+            .setThumbnail(msg.member.user.avatarURL)
+            .setFooter('cracked by Veetaha')
         );
-    }
- 
+    } 
 
 }

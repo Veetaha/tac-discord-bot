@@ -1,22 +1,21 @@
-# basic-ts-nodejs-template
+# tac-discord-bot
 
-[![Build Status](https://travis-ci.com/Veetaha/basic-ts-nodejs-template.svg?branch=master)](https://travis-ci.com/Veetaha/basic-ts-nodejs-template)
+[![Build Status](https://travis-ci.com/Veetaha/tac-discord-bot.svg?branch=master)](https://travis-ci.com/Veetaha/tac-discord-bot)
 
-This is a basic template project to start programming with TypeScript and NodeJS.
 To get started use these commands (`project-dir` is the name of the directory to copy this template to):
 
 ```bash
-git clone https://github.com/Veetaha/basic-ts-nodejs-template.git project-dir
+git clone https://github.com/Veetaha/tac-discord-bot.git project-dir
 cd project-dir
 npm install
+npm run dev
 ```
 
 ## Scripts
 |Command|Description|
 |--|--|
-|`dev`        | Execute your app with ts-node and restart it on file changes.     |
-|`start`      | Execute your app with ts-node.                                    |
-|`start:debug`| Execute your app with ts-node and debugger attachment possibility.|
+|`start`      | Run discord bot in production mode                                |
+|`dev`        | Run discord bot in development mode (supports debugger attachment)|
 |`test`       | Run all your unit tests.                                          |
 |`update-deps`| Update all your dependencies to the latest version.               |
 
@@ -32,7 +31,6 @@ npm install
 * `/.vscode` - A directory with vscode debug configurations.
 * `/common` - A directory that contains code, that may be used on both ends.
     * `/ambient-declarations` - A directory that contains ambient modules declaration files.
-    * `interfaces.ts` - File that exports some commonplace `type` and `interface` definitions.
 * `/backend` - A directory where resides all your NodeJS code.
     * `tsconfig.json` - TypeScript compiler configuration file. It is set up to provide the most severe type checks level by default.
     * `polyfills.ts` - File that imports all your polyfills. Be sure to import it at the first line of your app.

@@ -11,7 +11,7 @@ export class ThePonyApiService {
         const {pony}: RandomPonyResult = await (await fetch(
             `${this.apiPrefix}/pony/random`, { method: 'GET' })
         ).json();
-        return pony.representations.full;
+        return pony;
     }
 
 

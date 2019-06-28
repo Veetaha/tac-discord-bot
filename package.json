@@ -6,6 +6,7 @@
     "scripts": {
         "backend:container:start": "(cd backend && ts-node -r tsconfig-paths/register app.ts)",
         "backend:container:dev": "(cd backend && ts-node-dev --respawn -r tsconfig-paths/register --inspect=0.0.0.0:9229 -- app.ts)",
+        "start": "docker-compose run --rm --service-ports tac-discord-bot",
         "dev": "docker-compose --file debug.docker-compose.yml run --rm --service-ports tac-discord-bot-debug",
         "test": "cd backend && mocha -r ts-node/register -r tsconfig-paths/register tests/run-all.ts",
         "update-deps": "ncu -u && npm install"
@@ -46,6 +47,9 @@
         "colors": "latest",
         "discord.js": "^11.5.1",
         "dotenv": "latest",
+        "erlpack": "github:hammerandchisel/erlpack",
+        "ffmpeg": "0.0.4",
+        "ffmpeg-static": "^2.4.0",
         "joi": "latest",
         "lodash": "latest",
         "mathjs": "latest",
@@ -58,6 +62,8 @@
         "ts-typedefs": "^3.0.0",
         "tsconfig-paths": "latest",
         "typedi": "^0.8.0",
-        "typesafe-joi": "latest"
+        "typesafe-joi": "latest",
+        "ytdl-core": "^0.29.2",
+        "ytdl-core-discord": "^1.0.3"
     }
 }

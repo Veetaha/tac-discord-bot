@@ -23,7 +23,7 @@ new Discord.Client()
         })
         .buildMessageHandler()
     )
-    .on('ready', () => log.info(`🚀  Discord bot is listening on port ${config.port}`))
+    .on('ready', () => log.info(`🚀  Discord bot is listening.`))
     .login(config.discordBotToken)
     .catch(err => log.error(err, `bootstrapping error, discord bot failed to log in`));
 

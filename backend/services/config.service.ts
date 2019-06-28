@@ -11,6 +11,5 @@ export class ConfigService {
     }
 
     readonly discordBotToken = this.env.readEnvOrFail('DISCORD_BOT_TOKEN');
-    readonly port = this.env.readPortFromEnvOrFail('PORT');
     readonly version = this.env.readEnvOrFail('BOT_VERSION');
 }

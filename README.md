@@ -61,4 +61,3 @@ npm run dev
 ## Links
 
 * [`'discord.js'`](https://discord.js.org/#/docs/main/stable/general/welcome)
-* [``]

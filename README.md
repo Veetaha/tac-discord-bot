@@ -50,9 +50,15 @@ npm run dev
     * `/services` - A director the contains yoor app `'typedi'` services (singleton classes)
                     that participate in dependency injection system.
         * `debug.ts` - Example module that provides basic logging and assertions functionality.
+        * `/cmd-handlers` - A directory that contains global discord command handling services.
+
     * `/modules` - A directory that contains your app modules (classes, utils functions etc.).
         `/discord` - A directory that contains low level discord command handling logic.
     * `/tests` - A directory that contains all your unit tests.
         * `run-all.ts` - A script that runs all the tests that reside in this folder.
 * `/frontend` - Add your frontend here... *(temporarily absent)*
 
+## Links
+
+* [`'discord.js'`](https://discord.js.org/#/docs/main/stable/general/welcome)
+* [``]

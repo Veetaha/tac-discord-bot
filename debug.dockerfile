@@ -6,6 +6,4 @@ RUN add-apt-repository ppa:jonathonf/ffmpeg-4
 RUN apt install -y ffmpeg 
 WORKDIR /home/veetaha/my/projects/tac-discord-bot
 
-EXPOSE ${PORT}
-
 ENTRYPOINT ["npm", "run", "backend:container:dev"]

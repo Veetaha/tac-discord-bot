@@ -6,10 +6,11 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@modules/*": [ "modules/*"   ],
-            "@services/*": [ "services/*"   ],
-            "@app/*":     [ "./*"         ],
-            "@common/*":  [ "../common/*" ]
+            "@common/*":   [ "../common/*" ],
+            "@modules/*":  [ "modules/*"   ],
+            "@services/*": [ "services/*"  ],
+            "@app/*":      [ "./*"         ],
+            
         },
         "target":           "esnext",  
         "lib":              ["esnext"],

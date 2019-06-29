@@ -1,6 +1,9 @@
+import _ from 'lodash';
 import * as Joi from 'typesafe-joi';
 import { Service } from 'typedi';
+
 import { LoggingService } from './logging.service';
+import { NoopInProduction } from './config.service';
 
 @Service()
 export class DebugService {
@@ -23,9 +26,11 @@ export class DebugService {
      * 
      * @param truthy Suspect to be checked for truthiness.
      */
-    assert(truthy: unknown) {
-        if (!truthy) {
-            this.shutdown(truthy, `assertion failure`);
+    @NoopInProduction
+    assert(getSuspect: () =>unknown) {
+        const suspect = getSuspect();
+        if (!suspect) {
+            this.shutdown(suspect, `assertion failure`);
         }
     }
 
@@ -34,9 +39,11 @@ export class DebugService {
      * 
      * @param falsy Suspect to be checked for truthiness.
      */
-    assertFalsy(falsy: unknown) {
-        if (falsy) {
-            this.shutdown(falsy, `assertion failure`);
+    @NoopInProduction
+    assertFalsy(getSuspect: () => unknown) {
+        const suspect = getSuspect();
+        if (suspect) {
+            this.shutdown(suspect, `assertion failure`);
         }
     }
 
@@ -47,6 +54,7 @@ export class DebugService {
      * @param suspect   Value of to be checked for type conformance.
      * @param typeDescr `Joi.Schema` that `suspect` will be checked to match to.
      */
+    @NoopInProduction
     assertMatches(suspect: unknown, schema: Joi.Schema) {
         const { error } = Joi.validate(suspect, schema);
         if (error) {

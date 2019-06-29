@@ -14,6 +14,7 @@ export class EnvService {
         Dotenv.config(path != null ? {path}: void 0);
     }
 
+    
     /**
      * Tries to read environmental variable from `process.env` and returns its value.
      * @param varId Environmental variable name.

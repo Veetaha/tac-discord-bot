@@ -7,6 +7,5 @@ services:
         volumes:
             - .:/home/${USER}/my/projects/tac-discord-bot
         ports:
-            - ${PORT}:${PORT}
             - 9229:9229 # node inspector port
         env_file: .env

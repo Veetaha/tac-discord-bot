@@ -33,6 +33,7 @@
         "@types/mathjs": "latest",
         "@types/mocha": "latest",
         "@types/node": "latest",
+        "@types/humanize-duration": "^3.18.0",
         "@types/node-fetch": "^2.3.7",
         "chai": "latest",
         "mocha": "latest",
@@ -50,10 +51,10 @@
         "erlpack": "github:hammerandchisel/erlpack",
         "ffmpeg": "0.0.4",
         "ffmpeg-static": "^2.4.0",
+        "humanize-duration": "^3.18.0",
         "joi": "latest",
         "lodash": "latest",
         "mathjs": "latest",
-        "moment": "^2.24.0",
         "node-fetch": "^2.6.0",
         "node-opus": "^0.3.2",
         "reflect-metadata": "latest",
@@ -63,6 +64,7 @@
         "tsconfig-paths": "latest",
         "typedi": "^0.8.0",
         "typesafe-joi": "latest",
+        "typescript-collections": "^1.3.2",
         "ytdl-core": "^0.29.2",
         "ytdl-core-discord": "^1.0.3"
     }

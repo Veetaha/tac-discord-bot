@@ -13,8 +13,6 @@ RUN npm set unsafe-perm true
 
 RUN npm install
 
-EXPOSE ${PORT}
-
 ENV NODE_ENV=production
 
 CMD ["npm", "run", "backend:container:start"]

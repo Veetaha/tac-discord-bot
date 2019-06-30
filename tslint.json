@@ -15,7 +15,7 @@
         "prefer-const": true,
         "prefer-function-over-method": false,
         "prefer-object-spread": true,
-        "prefer-template": true,
+        "prefer-template": false,
         "prefer-readonly": true,
         "prefer-for-of": true,
         "prefer-switch": true,

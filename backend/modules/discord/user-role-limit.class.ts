@@ -1,19 +1,20 @@
-import Discord from 'discord.js';
-import { Nullable } from 'ts-typedefs';
+import Ds from 'discord.js';
 import Container from 'typedi';
-import { IteratorService } from '@services/utils/iterator.service';
+import { Nullable } from 'ts-typedefs';
 
-export class DiscordUserRoleLimit {
+import { IteratorService } from '@modules/utils/iterator.service';
+
+export class UserRoleLimit {
     private static readonly iter = Container.get(IteratorService);
 
     /** Creates `DiscordUserRoleLimit` that denies access only for the given roles. */
     static deny(...roles: string[]) {
-        return new DiscordUserRoleLimit(new Set(roles), false);
+        return new UserRoleLimit(new Set(roles), false);
     }
 
     /** Creates `DiscordUserRoleLimit` that allows access only for the given roles. */
     static allow(...roles: string[]) {
-        return new DiscordUserRoleLimit(new Set(roles), true);
+        return new UserRoleLimit(new Set(roles), true);
     }
 
     constructor(
@@ -27,8 +28,8 @@ export class DiscordUserRoleLimit {
      * 
      * @param suspectRoles Discord user roles to check.
      */
-    matchToRoleLimit(suspectRoles: Discord.GuildMember['roles']) {
-        const determinativeRole: Nullable<Discord.Role> = suspectRoles
+    matchToRoleLimit(suspectRoles: Ds.GuildMember['roles']) {
+        const determinativeRole: Nullable<Ds.Role> = suspectRoles
             .find(role => this.roles.has(role.name));
             
         return {
@@ -43,6 +44,6 @@ export class DiscordUserRoleLimit {
      * @param separator Separator string that will be inserted between role names.
      */
     stringifyRoles(separator = ', ') {
-        return DiscordUserRoleLimit.iter.join(this.roles.values(), separator);
+        return UserRoleLimit.iter.join(this.roles.values(), separator);
     }
 }

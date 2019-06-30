@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import { Nullable } from 'ts-typedefs';
 
-import { DiscordCmdParamMetadataApi, DiscordCmdScalarParam, DiscordCmdParamSchema, DiscordCmdParamsMetadataApi } 
-from '../discord.interfaces';
+import { CmdParamMetadataApi, CmdScalarParam, CmdParamSchema, CmdParamsMetadataApi } 
+from '../interfaces';
 
-export class DiscordCmdParamsMetadata {
-    readonly definition: readonly DiscordCmdParamMetadataApi[];
+export class CmdParamsMetadata {
+    readonly definition: readonly CmdParamMetadataApi[];
     readonly minRequiredAmount: number;
     readonly maxAmount: number;
 
-    constructor({definition, minRequiredAmount, maxAmount}: DiscordCmdParamsMetadataApi) {
-        const cls = DiscordCmdParamsMetadata;
+    constructor({definition, minRequiredAmount, maxAmount}: CmdParamsMetadataApi) {
+        const cls = CmdParamsMetadata;
         const hasRastParams = cls.isArraySchema(_.last(definition)!.schema);
         this.minRequiredAmount = _.defaultTo(
             minRequiredAmount, definition.length - +hasRastParams
@@ -26,7 +26,7 @@ export class DiscordCmdParamsMetadata {
      * Returns template usage representation of a single param under `paramIndex`.
      */
     getParamUsageTemplate(paramIndex: number) {
-        const cls         = DiscordCmdParamsMetadata;
+        const cls         = CmdParamsMetadata;
         const param       = this.definition[paramIndex];
         const paramPrefix = cls.isArraySchema(param.schema)     ? '...' : '';
         const paramSuffix = paramIndex > this.minRequiredAmount ? '?'   : '';
@@ -42,38 +42,34 @@ export class DiscordCmdParamsMetadata {
      * 
      * @returns Array of transformed to their type and validated parameters.
      */
-    tryTransformValidateOrFail(
-        params: readonly string[]
-    ) {
+    transformValidateOrFail(params: readonly string[]) {
         if (params.length > this.maxAmount) {
             throw new Error(
-                `Too many parameters (maximum ${'`'}${
-                this.maxAmount}${`'`} allowed)`
+                `Too many parameters (maximum ${'`'}${this.maxAmount}${`'`} allowed)`
             );
         }
         if (params.length < this.minRequiredAmount) {
             throw new Error(
-                `Too few parameters (minimum ${'`'}${
-                this.minRequiredAmount})${'`'} required`
+                `Too few parameters (minimum ${'`'}${this.minRequiredAmount})${'`'} required`
             );
         }
-        return this.tryTransformValidateOrFailImpl(params);
+        return this.transformValidateOrFailImpl(params);
     }
-    private tryTransformValidateOrFailImpl(params: readonly string[]) {
-        const cls = DiscordCmdParamsMetadata;
-        const resultParams = new Array<DiscordCmdScalarParam>();
+    private transformValidateOrFailImpl(params: readonly string[]) {
+        const cls = CmdParamsMetadata;
+        const resultParams = new Array<CmdScalarParam>();
         for (let i = 0; i < params.length; ++i) {
             const { schema, name } = this.definition[i];
             if (schema == null) {
                 resultParams.push(params[i]);
             } else if (!cls.isArraySchema(schema)) {
-                resultParams.push(cls.tryJoiTransformValidateOrFail(
+                resultParams.push(cls.joiTransformValidateOrFail(
                     params[i], schema, name
-                ) as DiscordCmdScalarParam);
+                ) as any);
             } else {
-                resultParams.push(...(cls.tryJoiTransformValidateOrFail(
+                resultParams.push(...(cls.joiTransformValidateOrFail(
                     params.slice(i), schema, name
-                )) as DiscordCmdScalarParam[]);
+                )) as any);
                 return resultParams;
             }
         }
@@ -81,19 +77,22 @@ export class DiscordCmdParamsMetadata {
     }
 
 
-    private static tryJoiTransformValidateOrFail(
+    private static joiTransformValidateOrFail(
         param:  string | string[], 
-        schema: DiscordCmdParamSchema,
+        schema: CmdParamSchema,
         name:   string
     ) {
         const {error, value} = schema.validate(param);
         if (error != null) {
-            throw new Error(`"${param}" is not a valid value for <${name}>`);
+            if (Array.isArray(param)) {
+                param = param[+error.details[0].path];
+            } 
+            throw new Error(`*"${param}"* is not a valid value for ${'`'}<${name}>${'`'}`);
         }
         return value;
     }
 
-    private static isArraySchema(schema: Nullable<DiscordCmdParamSchema>) {
+    private static isArraySchema(schema: Nullable<CmdParamSchema>) {
         return schema != null && schema.describe().type === 'array';
     }
 }

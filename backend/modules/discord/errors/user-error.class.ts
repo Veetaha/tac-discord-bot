@@ -1,32 +1,28 @@
-import Discord from 'discord.js';
+import Ds from 'discord.js';
 import Container from 'typedi';
-import { ConfigService } from '@services/config.service';
 
-interface DiscordMemberErrorParams {
+import { ConfigService } from '@modules/config.service';
+
+interface UserErrorParams {
     /** Short name of the kind of this error. */
     readonly title: string;
 
     /** Detailed explanation of why this error happened. */
     readonly description: string;
-    /**
-     * Discord member that caused an error.
-     */
-    readonly violator: Discord.GuildMember;
 }
 
 
 /**
  * Represents a base class for discord member errors (those that are caused
- * by people, not by bugs)
+ * by people, not by application bugs).
  */
-export class DiscordMemberError extends Error implements DiscordMemberErrorParams {
+export class UserError extends Error implements UserErrorParams {
     private static readonly config = Container.get(ConfigService);
 
     readonly title!:       string;
     readonly description!: string;
-    readonly violator!:    Discord.GuildMember;
 
-    constructor(params: DiscordMemberErrorParams) {
+    constructor(params: UserErrorParams) {
         super(`${params.title}: ${params.description}`);
         Object.assign(this, params);
     }
@@ -36,12 +32,11 @@ export class DiscordMemberError extends Error implements DiscordMemberErrorParam
      * Creates an error message that will me forwarded to `msg.reply(...)`.
      */
     createDiscordReply() {
-        const opts: Discord.RichEmbedOptions =
-        {
-            ...DiscordMemberError.config.errorRichEmbedDefaultOptions,
-            title: this.title,
+        const opts: Ds.RichEmbedOptions = {
+            ...UserError.config.errorRichEmbedDefaultOptions,
+            title:       this.title,
             description: this.description
         };
-        return new Discord.RichEmbed(opts);
+        return new Ds.RichEmbed(opts);
     }
 }

@@ -1,25 +1,25 @@
-import Discord from 'discord.js';
+import Ds from 'discord.js';
 import Joi from 'typesafe-joi';
 import { Nullable } from "ts-typedefs";
 
-import { DiscordUserRoleLimit } from "./discord-user-role-limit.class";
+import { UserRoleLimit } from "./user-role-limit.class";
 
-export interface DiscordCmdHandlerFnCtx<TParams extends DiscordCmdScalarParam[] = DiscordCmdScalarParam[]> {
+export interface CmdHandlerFnCtx<TParams extends CmdScalarParam[] = CmdScalarParam[]> {
     /** Command that this handler was invoked with. */
     readonly cmd: string;      
     
     /** Original discord message that was received. */
-    readonly msg: Discord.Message;
+    readonly msg: Ds.Message;
     /** 
      * Array of positional parameters that were forwarded to the handler by the user. 
      */
     readonly params: TParams;
 }
 
-export interface DiscordCmdMetadataApi {
+export interface CmdMetadataApi {
 
     /**  Defines the roles that user must have/not have in order to user the command. */
-    readonly userRoleLimit?: Nullable<DiscordUserRoleLimit>;
+    readonly userRoleLimit?: Nullable<UserRoleLimit>;
 
     /** 
      * Defines the command or an array of command names that will trigger the
@@ -50,10 +50,10 @@ export interface DiscordCmdMetadataApi {
      * that the command handler expects.
      * Excess parameters are not checked, but get also forwarded to the handler.
      */
-    readonly params?: Nullable<DiscordCmdParamsMetadataApi>;
+    readonly params?: Nullable<CmdParamsMetadataApi>;
 }
 
-export interface DiscordCmdParamsMetadataApi {
+export interface CmdParamsMetadataApi {
     /**
      * Minimum amount of positional parameters that are required to be passed.
      * Equals to `.definition.length` without optional array param at the end
@@ -74,10 +74,10 @@ export interface DiscordCmdParamsMetadataApi {
      * Defines the tuple of arguments that the given command handler accepts.
      * Pre: `.definition.length > 0`.
      */
-    definition: DiscordCmdParamMetadataApi[];
+    definition: CmdParamMetadataApi[];
 }
 
-export interface DiscordCmdParamMetadataApi {
+export interface CmdParamMetadataApi {
     /**
      * Descriptive and short name of the parameter to display in help message.
      */
@@ -101,12 +101,12 @@ export interface DiscordCmdParamMetadataApi {
      * 
      * Pre: If it is `Joi.ArraySchema` it must be the last paramter in the param list.
      */
-    readonly schema?: Nullable<DiscordCmdParamSchema>;
+    readonly schema?: Nullable<CmdParamSchema>;
 }
-export type DiscordCmdScalarParam = boolean | number | string;
+export type CmdScalarParam = boolean | number | string;
 
-export type DiscordCmdParamSchema = 
+export type CmdParamSchema = 
     | Joi.StringSchema 
     | Joi.NumberSchema 
     | Joi.BooleanSchema
-    | Joi.ArraySchema<Joi.Value<DiscordCmdScalarParam[]>>;
+    | Joi.ArraySchema<any>;

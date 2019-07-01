@@ -37,6 +37,10 @@ export class DsClientService {
         this.client.login(this.config.discordBotToken).catch(err => this.log.error(
             err, `bootstrapping error, discord bot failed to log in`
         ));
+        // const exitEvents = 
+        ([`exit`, `SIGINT`, `uncaughtException`, `SIGTERM`] as const).forEach((eventType) => {
+            process.on(eventType as any, () => this.client.destroy());
+        });
         return this;
     }
 } 

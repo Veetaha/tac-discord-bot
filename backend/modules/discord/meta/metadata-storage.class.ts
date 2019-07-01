@@ -14,6 +14,10 @@ import { CmdMetadataApi } from "../interfaces";
 export class MetadataStorage {
     private readonly cmdToHandlerMap = new Map<string, CmdHandlerWrapper>();
 
+    getHandlers() {
+        return _.uniq([...this.cmdToHandlerMap.values()]);
+    }
+
     /**
      * Stores metadata about the given `handlerFn` in metadata store.
      *  

@@ -5,11 +5,17 @@ import { Service } from "typedi";
 import { CmdEndpoint     } from "@modules/discord/meta/cmd-endpoint.decorator";
 import { CmdHandlerFnCtx } from "@modules/discord/interfaces";
 import { ThePonyApiService } from "@modules/the-pony-api/the-pony-api.service";
+import { MetadataStorage } from '@modules/discord/meta/metadata-storage.class';
+import { CmdHandlingService } from '@modules/discord/cmd-handling.service';
 
 @Service()
 export class TacStatelessCmdHandlingService {
 
-    constructor(private readonly thePonyApi: ThePonyApiService) {}
+    constructor(
+        private readonly thePonyApi: ThePonyApiService,
+        private readonly metadataStorage: MetadataStorage,
+        private readonly cmdHandling:  CmdHandlingService,
+    ) {}
 
     @CmdEndpoint({
         cmd:         ['pink'],
@@ -52,4 +58,32 @@ export class TacStatelessCmdHandlingService {
         return `*${'`'}${tags.join('`* *`')}${'`*'}`;
     }
 
+
+    @CmdEndpoint({
+        cmd: ['help', 'h'],
+        description: 'Displays command help box'
+    })
+    async onHelp({msg}: CmdHandlerFnCtx) {
+        const opts: Ds.RichEmbedOptions = {
+            title: 'Bot commands refference',
+            footer: { text: 'All rights are not reserved.' },
+            description: this.metadataStorage
+                .getHandlers()
+                .reduce((str, handler) => {
+                    const cmd = `${'`'}${this.cmdHandling.cmdPrefix}${handler.cmd.values().next().value}${'`'}`;
+                    const top = `${str}${cmd} ${handler.getUsageTemplate()}\n`;
+                    const aliases = `**Aliases:** ${'`'}${[...handler.cmd.values()].join('` `')}${'`'}\n`;
+                    const params = handler.params == null 
+                        ? '' 
+                        : `**Parameters:**:\n${handler.params.definition.reduce((pstr, param) => 
+                                `${pstr}* *${param.name}*: ${param.description}\n`
+                            ,'')}`;
+                    return `${top}${aliases}${params}`;
+                },
+                    ''
+                )
+        };
+        const embed = new Ds.RichEmbed(opts);
+        await msg.channel.send(embed);
+    }
 }

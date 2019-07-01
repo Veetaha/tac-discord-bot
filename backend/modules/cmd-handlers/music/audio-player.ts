@@ -18,7 +18,6 @@ export class AudioPlayer {
     private curDispatcher?:    Nullable<Ds.StreamDispatcher>;
 
     constructor(client: Ds.Client) {
-        super();
         this.voiceMgr = new VoiceMgr(client);
     }
 
@@ -38,16 +37,19 @@ export class AudioPlayer {
         const prevConn = this.voiceMgr.getConnection();
         const connection = await this.voiceMgr
             .connectToChannelOrFail(track.getVoiceChannel());
-        const dispatcher = track.streamTo(connection);
-        if (this.isStreaming()) this.endStreaming();
 
-        this.curDispatcher = dispatcher;
-        dispatcher.on('end', reason => {
-            AudioPlayer.log.info(`Dispather ended playing with reason (${reason})`);
-            if (this.curDispatcher === dispatcher) {
-                this.curDispatcher = null;
-            }
-        });
+        if (this.isStreaming()) this.endStreaming();
+        const dispatcher = track.streamTo(connection);
+
+        (this.curDispatcher = dispatcher)
+            .once('end', reason => {
+                AudioPlayer.log.info(`Dispather ended playing with reason (${reason})`);
+                if (this.curDispatcher === dispatcher) {
+                    this.curDispatcher = null;
+                }
+            })
+            .on('speaking', isSpeaking => AudioPlayer.log.info(isSpeaking, `Dispatcher speaking`))
+            .on('debug', info => AudioPlayer.log.warning(info, 'Dispatcher debug'));
         return { 
             newConnection: prevConn === this.voiceMgr.getConnection() 
                 ? null : this.voiceMgr.getConnection(),
@@ -62,7 +64,7 @@ export class AudioPlayer {
         this.curDispatcher!.end(TrackEndReason.TrackInterrupt);
     }
 
-    isStreaming() {
+    isStreaming() { 
         return this.curDispatcher != null;
     }
 
@@ -96,6 +98,12 @@ export class AudioPlayer {
         this.curDispatcher!.setVolumeLogarithmic(volume);
     }
 
+    /**
+     * Pre: `.isStreaming() === true`
+     */
+    getVolumeLogarithmic() {
+        return this.curDispatcher!.volumeLogarithmic;
+    }
 
     
 }

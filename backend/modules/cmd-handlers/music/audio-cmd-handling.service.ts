@@ -6,7 +6,9 @@ import { CmdHandlerFnCtx } from "@modules/discord/interfaces";
 import { DsClientService } from '@modules/ds-client.service';
 import { ConfigService   } from '@modules/config.service';
 
-import { AudioQueue } from './audio-queue.class';
+import { AudioQueue, Events as AQEvents } from './audio-queue.class';
+import { Nullable } from 'ts-typedefs';
+import { RichEmbed } from 'discord.js';
 
 // TODO
 @Service()
@@ -14,41 +16,77 @@ export class AudioCmdHandlingService {
     private readonly audioQueue: AudioQueue;
 
     constructor(dsClient: DsClientService, config: ConfigService) {
-        this.audioQueue = new AudioQueue(dsClient.client, config.maxAudioQueueSize);
+        this.audioQueue = new AudioQueue(dsClient.client, config.maxAudioQueueSize)
+            .on(AQEvents.TrackScheduled, ({track, index}) => track.msg.channel.send(new RichEmbed({
+                description: `Track ${track.getTitleMd()} was scheduled to be ${'`'}#${index}${'`'} in the queue.`
+            })))
+            .on(AQEvents.TrackStart, track => track.msg.channel.send(new RichEmbed({ 
+                description: `Now playing ${track.getTitleMd()}`
+            })))
+            .on(AQEvents.TrackEnd, track => track.msg.channel.send(new RichEmbed({ 
+                description: `Track ${track.getTitleMd()} stopped playing has finished.`
+            })))
+            .on(AQEvents.TrackInterrupt, track => track.msg.channel.send(new RichEmbed({
+                description: `Track ${track.getTitleMd()} was skipped.`
+            })))
+            .on(AQEvents.ConnectedToVoiceChannel, ({channel, track}) =>
+                track.msg.channel.send(`Connected to voice channel **"${channel.name}"**.`)
+            );
     }
     
     @CmdEndpoint({
         cmd: ['music', 'm'],
         description: "Play music.",
         params: { 
+            minRequiredAmount: 0,
             definition: [
             { 
                 name: 'youtube_url',
                 description: 'Connects to your voice channel and plays music that you request.',
-                schema: Joi.string().uri().regex(/^https://youtube\.com/)
+                schema: Joi.string().uri().regex(/^https:\/\/www\.youtube\.com/)
             }
         ] 
         }
     })
-    async onMusic({msg, params: [ytUrl]}: CmdHandlerFnCtx<[string]>) {
+    async onMusic({msg, params: [ytUrl]}: CmdHandlerFnCtx<[Nullable<string>]>) {
+        if (ytUrl == null) {
+            const embed = new RichEmbed({
+                title: `Current music queue`
+            });
+            let i = 0;
+            this.audioQueue.forEachTrackInQueue((audioTrack) => {
+                embed.addField(`#${i}`, audioTrack.getTitleMd());
+                ++i;
+            });
+            await msg.channel.send(embed);
+            return;
+        }
         await this.audioQueue.streamOrEnqueueYtVidOrderOrFail({
-            ytUrl, customer: msg.member
-        });
+            ytUrl, msg
+        });   
+    }
 
-        // dispatcher.on('start', () => 
-        //     msg.channel.send(`Now playing **"${audioTrack.title}"**`)
-        // );
-        // dispatcher.on('end', reason => 
-        //     msg.channel.send(`Stopped playing **"${audioTrack.title}** *(${reason})*"`)
-        // );
-        // dispatcher.on('error', err => 
-        //     msg.channel.send(`Error while playing **"${audioTrack.title}"** *(${err.message})*"`)
-        // );
-        // if (isNewConnection) {
-        //     await msg.channel.send(
-        //         `Connected to voice channel **"${msg.member.voiceChannel.name}"**.`
-        //     );
-        // }
+    @CmdEndpoint({
+        cmd: ['volume', 'v'],
+        description: 'Sets or displays current volume ',
+        params: {
+            minRequiredAmount: 0,
+            definition: [{ 
+                name: 'volume_precentage', schema: Joi.number().min(0).max(100) ,
+                description: 'Volume percentage number from 0 to 1.'
+            }]
+        }
+    })
+    async onVolume({msg, params: [volume]}: CmdHandlerFnCtx<[Nullable<number>]>) {
+        if (volume == null) {
+            await msg.reply(
+                `Current music volume is ${'`'}${
+                this.audioQueue.getVolumeLogarithmic() * 100}${'`'}`
+            );
+            return;
+        }
+        this.audioQueue.setVolumeLogarithmic(volume / 100);
+        await msg.reply(`Current music volume was set to ${'`'}${volume}${'`'}`);
     }
 
 
@@ -58,7 +96,9 @@ export class AudioCmdHandlingService {
     })
     async onPauseMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.pauseCurrentTrackOrFail();
-        await msg.reply(`Track ${this.audioQueue.getCurrentTrackTitleMd()} was set on pause.`);
+        await msg.reply(new RichEmbed({
+            description: `Track ${this.audioQueue.getCurrentTrack()!.getTitleMd()} was set on pause.`
+        }));
     }
 
     @CmdEndpoint({
@@ -67,6 +107,17 @@ export class AudioCmdHandlingService {
     })
     async onResumeMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.resumeCurrentTrackOrFail();
-        await msg.reply(`Track ${this.audioQueue.getCurrentTrackTitleMd()} was resumed.`);
+        await msg.reply(new RichEmbed({
+            description: `Track ${this.audioQueue.getCurrentTrack()!.getTitleMd()} was resumed.`
+        }));
     }
+
+    @CmdEndpoint({
+        cmd: ['skip-music', 'sm'],
+        description: 'Skips currently played audio track'
+    })
+    async onSkipMusic({}: CmdHandlerFnCtx) {
+        await this.audioQueue.skipCurrentTrackOrFail();
+    }
+
 }

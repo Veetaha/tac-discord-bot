@@ -4,7 +4,7 @@ import { Nullable } from "ts-typedefs";
 
 import { UserRoleLimit } from "./user-role-limit.class";
 
-export interface CmdHandlerFnCtx<TParams extends CmdScalarParam[] = CmdScalarParam[]> {
+export interface CmdHandlerFnCtx<TParams extends Nullable<CmdScalarParam>[] = Nullable<CmdScalarParam>[]> {
     /** Command that this handler was invoked with. */
     readonly cmd: string;      
     

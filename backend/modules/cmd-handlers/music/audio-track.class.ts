@@ -9,8 +9,8 @@ export class AudioTrack {
     constructor(
         /** Youtube video info fetched via `Ytdl`. */
         private readonly vidInfo: Ytdl.videoInfo,
-        /** User that ordered this audio track to play. */
-        readonly customer: Ds.GuildMember
+        /** Message that ordered this audio track to play. */
+        readonly msg: Ds.Message
     ) {}
 
     /**
@@ -20,7 +20,7 @@ export class AudioTrack {
      */
     static async createFromYtVidOrderOrFail(order: YtVidOrder) {
         return Ytdl.getInfo(order.ytUrl).then(
-            info => new AudioTrack(info, order.customer),
+            info => new AudioTrack(info, order.msg),
             err  => Promise.reject(new FetchYtInfoError(
                 `Failed to fetch info for '${order.ytUrl} (${err.message}).'`
             ))
@@ -48,13 +48,14 @@ export class AudioTrack {
      * @param voiceConnection Voice connection to use for playing.
      */
     streamTo(voiceConnection: Ds.VoiceConnection) {
-        return voiceConnection.playStream(Ytdl.downloadFromInfo(this.vidInfo, { 
-            filter: 'audioonly', quality: 'highestaudio'
-        }));
+        const opts: Ytdl.downloadOptions = { quality: 'highestaudio' };
+        const stream = Ytdl.downloadFromInfo(this.vidInfo, opts);
+        return voiceConnection.playStream(stream, { bitrate: 192000 }); 
+        // https://stackoverflow.com/questions/51344574/improvring-discord-js-audio-quailty-for-my-bot
     }
 
     getVoiceChannel(): Nullable<Ds.VoiceChannel> {
-        return this.customer.voiceChannel;
+        return this.msg.member.voiceChannel;
     }
 
 }

@@ -45,7 +45,7 @@ export class CmdParamsMetadata {
     transformValidateOrFail(params: readonly string[]) {
         if (params.length > this.maxAmount) {
             throw new Error(
-                `Too many parameters (maximum ${'`'}${this.maxAmount}${`'`} allowed)`
+                `Too many parameters (maximum ${'`'}${this.maxAmount}${'`'} allowed)`
             );
         }
         if (params.length < this.minRequiredAmount) {

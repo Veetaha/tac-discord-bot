@@ -9,7 +9,7 @@ import { DebugService } from '@modules/debug.service';
 
 import { YtVidOrder } from './interfaces';
 import { AudioTrack } from './audio-track.class';
-import { AudioPlayer, TrackEndReason } from './audio-player';
+import { AudioPlayer, TrackEndReason } from './audio-player.class';
 import { 
     NoAudioIsStreamingError, AudioIsAlreadyPausedError, 
     AudioIsNotPausedError, AudioQueueOverflowError 
@@ -63,7 +63,12 @@ export class AudioQueue extends EventEmitter {
             return this.enqueueYtVidOrderOrFail(order);
         }
         this.queue.enqueue(await AudioTrack.createFromYtVidOrderOrFail(order));
-        await this.streamCurrentTrackOrFail();
+        try {
+            await this.streamCurrentTrackOrFail();
+        } catch (err) {
+            this.queue.dequeue(); 
+            throw err;
+        }
     }
     private async enqueueYtVidOrderOrFail(order: YtVidOrder) {
         if (this.queue.size() >= this.maxQueueSize) {

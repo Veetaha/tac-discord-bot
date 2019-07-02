@@ -74,7 +74,7 @@ export class TacStatelessCmdHandlingService {
             'Evaluate JavaScript and return the result. Only lead developer (Veetaha) ' +
             'has access to this command.',
         params: { 
-            minRequiredAmount: 0,
+            minRequiredAmount: 1,
             definition: [
                 {
                     name: 'script', 

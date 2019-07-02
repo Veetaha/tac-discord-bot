@@ -12,12 +12,13 @@ export class ConfigService {
     constructor(private readonly env: EnvService){
         if (this.isDevelopmentMode) env.loadDotenv();
     }
-
     readonly music = {
         maxQueueSize:        20,
         defaultBitrate:      128, // kbps
         defaultVolume:       1,
-        defaultPacketPasses: 1
+        defaultPacketPasses: 1,
+        activeTrackEmbedColor: 34047, // https://leovoel.github.io/embed-visualizer/
+        emptyQueueEmbedColor: 16711733
     };
     readonly evalUserId = "150684588841107457";
 

@@ -66,6 +66,7 @@ export class AudioQueue extends EventEmitter {
         AudioQueue.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
         return this.audioPlayer.isStreaming(); 
     }
+    isEmpty()         { return this.queue.isEmpty();          }
     getVolume()       { return this.audioPlayer.getVolume();  }
     getBitrate()      { return this.audioPlayer.getBitrate(); }
     getPacketPasses() { return this.audioPlayer.getPacketPasses(); }

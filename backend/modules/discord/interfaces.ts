@@ -16,7 +16,7 @@ export interface CmdHandlerFnCtx<TParams extends Nullable<CmdScalarParam>[] = Nu
     readonly params: TParams;
 }
 
-export interface CmdMetadataApi {
+export interface CmdMetadataApi<THandlerFnCtx extends CmdHandlerFnCtx = CmdHandlerFnCtx> {
 
     /**  Defines the roles that user must have/not have in order to user the command. */
     readonly userRoleLimit?: Nullable<UserRoleLimit>;

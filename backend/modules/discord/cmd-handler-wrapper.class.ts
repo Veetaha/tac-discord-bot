@@ -102,7 +102,8 @@ export class CmdHandlerWrapper implements CmdMetadata {
                 { maxDecimalPoints: 0}
             );
             throw new CmdCooldownError(
-                `You have to wait ${durationUntilNextCall} before the next call "${ctx.cmd}".`
+                `You have to wait ${'`'}${durationUntilNextCall}${'`'} untill ` +
+                `the next call to ${'`'}${ctx.cmd}${'`'}.`
             );
         }
     }

@@ -1,5 +1,6 @@
 import Ds from 'discord.js';
 import Ytdl from 'ytdl-core';
+import humanizeDuration from 'humanize-duration';
 import { Nullable } from 'ts-typedefs';
 
 
@@ -35,6 +36,10 @@ export class AudioTrack {
         const title = `[**"${this.vidInfo.title}"**](${this.vidInfo.video_url})`;
         const author = `**[${this.vidInfo.author.name}](${this.vidInfo.author.channel_url})**`;
         return `${author} - ${title}`;
+    }
+
+    getDuration() {
+        return humanizeDuration(parseInt(this.vidInfo.length_seconds) * 1000);
     }
 
     getThumbnailUrl() {

@@ -14,12 +14,12 @@ import { CmdHandlerWrapper } from '@modules/discord/cmd-handler-wrapper.class';
 
 import { UnknownCmdError, EvalPermissionError } from './errors';
 import { CmdHandlingService } from '@modules/discord/cmd-handling.service';
-import { config } from 'dotenv';
 import { ConfigService } from '@modules/config.service';
+import humanizeDuration from 'humanize-duration';
 
 
 @Service()
-export class TacStatelessCmdHandlingService {
+export class StatelessCmdHandlingService {
     readonly cmdSyntaxRefference = Fs
         .readFileSync(Path.join(__dirname, 'command-syntax.md'), 'utf8')
         .replace(/\${cmdPrefix}/g, this.cmdHandling.cmdPrefix);
@@ -152,13 +152,14 @@ export class TacStatelessCmdHandlingService {
     private getCommandHelpMd(cmdHandler: CmdHandlerWrapper) {
         const top     = `**${'```'}${cmdHandler.getUsageTemplate()}${'```'}**\n`;
         const aliases = `**Aliases:** *${cmdHandler.cmd.join('*, *')}*\n`;
-        const params  = cmdHandler.params == null 
-            ? '' 
+        const cooldown = cmdHandler.cooldownTime == null ? '' 
+            : `**Cooldown**: ${'`'}${humanizeDuration(cmdHandler.cooldownTime)}${'`'}\n`;
+        const params  = cmdHandler.params == null ? '' 
             : `**Parameters:**:\n` + cmdHandler.params.definition
                 .reduce((pstr, param, i) => pstr + 
                     ` ${'`'}${cmdHandler.params!.getParamUsageTemplate(i)}${'`'} ${param.description}\n`,
                     ''
                 );
-        return `${top}${cmdHandler.description}\n${aliases}${params}`;   
+        return `${top}${cmdHandler.description}\n${aliases}${cooldown}${params}`;   
     }
 }

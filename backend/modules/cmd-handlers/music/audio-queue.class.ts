@@ -57,6 +57,23 @@ export class AudioQueue extends EventEmitter {
         super();
         this.audioPlayer = new AudioPlayer(dsClient);
     }
+
+    getCurrentTrack() { 
+        AudioQueue.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
+        return this.queue.peek(); 
+    }
+    isStreaming() { 
+        AudioQueue.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
+        return this.audioPlayer.isStreaming(); 
+    }
+    getVolume()       { return this.audioPlayer.getVolume();  }
+    getBitrate()      { return this.audioPlayer.getBitrate(); }
+    getPacketPasses() { return this.audioPlayer.getPacketPasses(); }
+    setVolume(volume: number)       { return this.audioPlayer.setVolume(volume);       }
+    setBitrate(bitrate: number)     { return this.audioPlayer.setBitrate(bitrate);     }
+    setPacketPasses(amount: number) { return this.audioPlayer.setPacketPasses(amount); }
+    
+    
  
     async streamOrEnqueueYtVidOrderOrFail(order: YtVidOrder) {
         if (!this.queue.isEmpty()) {
@@ -112,14 +129,9 @@ export class AudioQueue extends EventEmitter {
             return this.streamCurrentTrackOrFail();
         }
     }
-    /**
-     * See `AudioPlayer.setVolumeLogrithmic()`.
-     */
-    setVolumeLogarithmic(volume: number) {
-        return this.audioPlayer.setVolumeLogarithmic(volume);
-    }
-    getVolumeLogarithmic() {
-        return this.audioPlayer.getVolumeLogarithmic();
+
+    forEachTrackInQueue(...params: Parameters<Queue<AudioTrack>['forEach']> ) {
+        return this.queue.forEach(...params);
     }
 
     async skipCurrentTrackOrFail() {
@@ -127,40 +139,31 @@ export class AudioQueue extends EventEmitter {
         this.audioPlayer.endStreaming();
     }
 
-
     pauseCurrentTrackOrFail() {
         this.ensurePlayerIsStreamingOrFail();
-        if (this.audioPlayer.isCurrentTrackOnPause()) {
-            const trackTitle = this.getCurrentTrack()!.getTitleMd();
-            throw new AudioIsAlreadyPausedError(`Track ${trackTitle} is already on pause.`);
+        if (this.audioPlayer.isPaused()) {
+            const trackMd = this.getCurrentTrack()!.toMd();
+            throw new AudioIsAlreadyPausedError(`Track ${trackMd} is already on pause.`);
         }
-        this.audioPlayer.pauseCurrentTrack();
+        this.audioPlayer.pause();
     }
+    
 
     resumeCurrentTrackOrFail() {
         this.ensurePlayerIsStreamingOrFail();
-        if (!this.audioPlayer.isCurrentTrackOnPause()) {
-            const trackTitle = this.getCurrentTrack()!.getTitleMd();
-            throw new AudioIsNotPausedError(`Track ${trackTitle} was not paused.`);
+        if (!this.audioPlayer.isPaused()) {
+            const trackMd = this.getCurrentTrack()!.toMd();
+            throw new AudioIsNotPausedError(`Track ${trackMd} was not paused.`);
         }
-        this.audioPlayer.resumeCurrentTrack();
-    }
-
-    /**
-     * Returns currently streaming track.
-     */
-    getCurrentTrack() {
-        return this.queue.peek();
+        this.audioPlayer.resume();
     }
 
     private ensurePlayerIsStreamingOrFail() {
-        if (!this.audioPlayer.isStreaming()) {
+        if (!this.isStreaming()) {
             throw new NoAudioIsStreamingError('No audio track is currently playing.');
         }
     }
 
-    forEachTrackInQueue(...params: Parameters<Queue<AudioTrack>['forEach']> ) {
-        return this.queue.forEach(...params);
-    }
+    
 
 }

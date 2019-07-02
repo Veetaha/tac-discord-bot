@@ -29,7 +29,7 @@ export class CmdParamsMetadata {
         const cls         = CmdParamsMetadata;
         const param       = this.definition[paramIndex];
         const paramPrefix = cls.isArraySchema(param.schema)     ? '...' : '';
-        const paramSuffix = paramIndex > this.minRequiredAmount ? '?'   : '';
+        const paramSuffix = paramIndex >= this.minRequiredAmount ? '?'  : '';
         return `<${paramPrefix}${param.name}${paramSuffix}>`;
     }
 

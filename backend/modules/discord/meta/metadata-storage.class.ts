@@ -5,6 +5,7 @@ import { Class } from "ts-typedefs";
 import { CmdHandlerWrapper, CmdHandlerFn } from "../cmd-handler-wrapper.class";
 import { CmdParamsMetadata } from "./cmd-params-metadata.class";
 import { CmdMetadataApi } from "../interfaces";
+import { IteratorService } from "@modules/utils/iterator.service";
  
 /**
  * Represents a singleton repository to store metadata about global application
@@ -13,9 +14,10 @@ import { CmdMetadataApi } from "../interfaces";
 @Service()
 export class MetadataStorage {
     private readonly cmdToHandlerMap = new Map<string, CmdHandlerWrapper>();
+    constructor(private readonly it: IteratorService) {}
 
     getHandlers() {
-        return _.uniq([...this.cmdToHandlerMap.values()]);
+        return this.it.uniq(this.cmdToHandlerMap.values());
     }
 
     /**
@@ -35,7 +37,6 @@ export class MetadataStorage {
         );
         const handler = new CmdHandlerWrapper({
             ...inEndpointMetadata,
-            cmd:       new Set(cmds),
             handlerFn: handlerFn.bind(Container.get(handlerServiceClass)),
             params:    inEndpointMetadata.params == null 
                 ? null 

@@ -23,7 +23,8 @@ export interface CmdMetadataApi {
 
     /** 
      * Defines the command or an array of command names that will trigger the
-     * decorated command handler method.
+     * decorated command handler method. First command name will be used as a
+     * helpful reference usage template.
      * 
      * Pre: commands must not contain any `\W` (word break characters).
      */

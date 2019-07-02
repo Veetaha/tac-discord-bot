@@ -13,12 +13,18 @@ export class ConfigService {
         if (this.isDevelopmentMode) env.loadDotenv();
     }
 
-    readonly maxAudioQueueSize = 20;
+    readonly music = {
+        maxQueueSize:        20,
+        defaultBitrate:      128, // kbps
+        defaultVolume:       1,
+        defaultPacketPasses: 1
+    };
+    readonly evalUserId = "150684588841107457";
 
     readonly cmdHandlingParams: CmdHandlingInitParams = {
         cmdPrefix: '--'
     };
-
+    
     readonly discordBotToken = this.env.readEnvOrFail('DISCORD_BOT_TOKEN');
     readonly version = this.env.readEnvOrFail('BOT_VERSION');
     readonly errorRichEmbedDefaultOptions: Partial<Ds.RichEmbedOptions> = {

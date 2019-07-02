@@ -1,4 +1,4 @@
-import _         from 'lodash';
+import _ from 'lodash';
 import Container from 'typedi';
 import humanizeDuration from 'humanize-duration';
 import { Nullable, Merge } from 'ts-typedefs';
@@ -21,8 +21,6 @@ export type CmdHandlerFn<TThis = unknown> = MaybeAsyncRoutine<[CmdHandlerFnCtx],
 export type CmdMetadata = Merge<CmdMetadataApi, {
     params?: Nullable<CmdParamsMetadata>;
 
-    /** Command name array mapped to set of case-insensitive strings. */
-    cmd: Set<string>;
     /**
      * Defines a function that is not yet bound to its service class.
      */
@@ -46,7 +44,7 @@ export class CmdHandlerWrapper implements CmdMetadata {
     // The following props are copies of `Discord3CmdEndpointMetadata` props.
     readonly handlerFn!:     CmdHandlerFn;
     readonly userRoleLimit?: Nullable<UserRoleLimit>;
-    readonly cmd!:           Set<string>;
+    readonly cmd!:           string[];
     readonly description!:   string;
     readonly cooldownTime?:  Nullable<number>;    
     readonly params?:        Nullable<CmdParamsMetadata>;
@@ -70,13 +68,14 @@ export class CmdHandlerWrapper implements CmdMetadata {
      */
     getUsageTemplate() {
         const { cmdPrefix } = Container.get(CmdHandlingService);
-        const cmd    = this.cmd.values().next().value; // take the first command name for template
+        const [cmd] = this.cmd;
+
         const params = this.params == null 
             ? '' 
             : this.params.definition.reduce((str, _param, i) => 
                 `${str} ${this.params!.getParamUsageTemplate(i)}`, ''
             );
-        return `${'`'}${cmdPrefix}${cmd}${params}${'`'}`;
+        return `${cmdPrefix}${cmd}${params}`;
     }
 
     /**
@@ -87,7 +86,7 @@ export class CmdHandlerWrapper implements CmdMetadata {
      * Pre: `msg.content === (prefix + cmd + ' ' + params).trim()` 
      */
     async handleMsgOrFail(ctx: TryHandleMsgCtx) {
-        CmdHandlerWrapper.debug.assert(() => this.cmd.has(ctx.cmd));
+        CmdHandlerWrapper.debug.assert(() => this.cmd.includes(ctx.cmd));
         this.ensureSenderObeysRoleLimitOrFail(ctx);  
         this.ensureCooldownIsNotActive(ctx);
         const params = this.transformValidateParamsOrFail(ctx);
@@ -137,7 +136,7 @@ export class CmdHandlerWrapper implements CmdMetadata {
         if (this.params == null) {
             if (params.length > 0) throw new CmdInvalidParamsError(
                 `Command **"${cmd}"** expects ${'`'}0${'`'} parameters.\n` +
-                `*Usage:* ${this.getUsageTemplate()}`
+                `*Usage:* ${'``'}${this.getUsageTemplate()}${'```'}`
             ); 
             return [];
         }
@@ -145,7 +144,7 @@ export class CmdHandlerWrapper implements CmdMetadata {
             return this.params.transformValidateOrFail(params); 
         } catch (err) {
             throw new CmdInvalidParamsError(
-                err.message as string + `\n*Usage:* ${this.getUsageTemplate()}`
+                err.message as string + `\n*Usage:* ${'```'}${this.getUsageTemplate()}${'```'}`
             );
         }
     }

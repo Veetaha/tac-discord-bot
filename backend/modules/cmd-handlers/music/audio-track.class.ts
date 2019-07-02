@@ -1,10 +1,13 @@
 import Ds from 'discord.js';
 import Ytdl from 'ytdl-core';
 import { Nullable } from 'ts-typedefs';
+
+
 import { YtVidOrder } from './interfaces';
 import { FetchYtInfoError } from './errors';
 
-export class AudioTrack {
+
+export class AudioTrack {  
 
     constructor(
         /** Youtube video info fetched via `Ytdl`. */
@@ -27,18 +30,23 @@ export class AudioTrack {
         );
     }
 
-    getTitleMd() {
-        return `[**"${this.vidInfo.title}"**](${this.vidInfo.video_url})`;
+    /** Returns a simple one-line markdown-formated representation of this track. */
+    toMd() {
+        const title = `[**"${this.vidInfo.title}"**](${this.vidInfo.video_url})`;
+        const author = `**[${this.vidInfo.author.name}](${this.vidInfo.author.channel_url})**`;
+        return `${author} - ${title}`;
     }
 
-    getThumbnailMd() {
-        return `[![Video thumbnail]${this.vidInfo.thumbnail_url}](${this.vidInfo.video_url})`;
+    getThumbnailUrl() {
+        return `https://i.ytimg.com/vi/${this.vidInfo.video_id}/default.jpg`;
     }
 
-    getAuthorMd() {
-        return `**[${this.vidInfo.author.name}](${this.vidInfo.author.channel_url})**`;
+    private static readonly ytdlDownloadOpts: Ytdl.downloadOptions = { quality: 'highestaudio' };
+    getOriginalBitrateOrFail() {
+        const format = Ytdl.chooseFormat(this.vidInfo.formats, AudioTrack.ytdlDownloadOpts);
+        if (format instanceof Error) throw format;
+        return format.audioBitrate;
     }
-
     /**
      * Attempts to create youtube stream and pipe it to discord voice channel.
      * Returns `.dispatcher` instance that manages stream transmission.
@@ -47,10 +55,9 @@ export class AudioTrack {
      * @param vidInfo         Youtube video info to play audio from.
      * @param voiceConnection Voice connection to use for playing.
      */
-    streamTo(voiceConnection: Ds.VoiceConnection) {
-        const opts: Ytdl.downloadOptions = { quality: 'highestaudio' };
-        const stream = Ytdl.downloadFromInfo(this.vidInfo, opts);
-        return voiceConnection.playStream(stream, { bitrate: 192000 }); 
+    streamOrFail(voiceConnection: Ds.VoiceConnection, dsStreamOpts: Ds.StreamOptions = {}) {
+        const stream = Ytdl.downloadFromInfo(this.vidInfo, AudioTrack.ytdlDownloadOpts);
+        return voiceConnection.playStream(stream, dsStreamOpts); 
         // https://stackoverflow.com/questions/51344574/improvring-discord-js-audio-quailty-for-my-bot
     }
 

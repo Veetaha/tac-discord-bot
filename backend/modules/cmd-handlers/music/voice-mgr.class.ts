@@ -39,6 +39,7 @@ export class VoiceMgr {
     private async connectToChannel(voiceChannel: Ds.VoiceChannel){
         if (this.connection == null) {
             this.connection = await voiceChannel.join();
+            return;
         }
         if (this.connection.channel.id === voiceChannel.id) return;  
         this.connection.disconnect();

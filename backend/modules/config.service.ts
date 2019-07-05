@@ -27,17 +27,6 @@ export class ConfigService {
         name:               this.env.readEnvOrFail('MAIN_GUILD_NAME'),
         initialMemberRoles: this.env.readEnvOrFail('MAIN_GUILD_INITIAL_ROLES').split(',')
     } as const;
-    readonly welcomeImg = {
-        userAva: {
-            x: 650, 
-            y: 400, 
-            radius: 200
-        },
-        bg: {
-            width: 1700,
-            height: 900
-        }
-    } as const;
 
     readonly cmdHandlingParams: CmdHandlingInitParams = {
         cmdPrefix: '--'

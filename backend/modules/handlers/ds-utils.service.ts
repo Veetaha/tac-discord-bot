@@ -1,5 +1,5 @@
 import Ds from 'discord.js';
-import IterTools from 'iter-tools';
+import * as IterTools from 'iter-tools';
 import { Service } from "typedi";
 
 import { ConfigService } from '@modules/config.service';

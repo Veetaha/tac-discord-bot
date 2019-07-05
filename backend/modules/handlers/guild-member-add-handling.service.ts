@@ -55,16 +55,26 @@ export class GuildMemberAddHandlingService {
             new Ds.Attachment(canvas.toBuffer(), 'welcome-img.png')
         );
     }
-
+    readonly welcomeImg = {
+        userAva: {
+            x: 20, 
+            y: 850, 
+            radius: 200
+        },
+        bg: {
+            width: 1700,
+            height: 900
+        }
+    } as const;
     private async createWelcomeMemberCanvas(newMember: Ds.GuildMember) {
-        const { bg, userAva } = this.config.welcomeImg;
+        const { bg, userAva } = this.welcomeImg;
         const [userAvaImg, bgImg] = await Promise.all([
             Canvas.loadImage(newMember.user.displayAvatarURL),
             this.assets.getImage(ImgId.MemberWelcomeBg),
         ]);
-        const canvas = Canvas.createCanvas(bg.width, bg.height);
+        const canvas = Canvas.createCanvas(bg.width, bg.height + 500);
         const ctx    = canvas.getContext('2d');
-        ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(bgImg, 0, 0);
         ctx.save();
         ctx.beginPath();
             ctx.arc(
@@ -81,13 +91,19 @@ export class GuildMemberAddHandlingService {
         ctx.drawImage(userAvaImg, userAva.x, userAva.y, 2 * userAva.radius, 2 * userAva.radius); 
         ctx.restore();
         
-        const welcomeText = `Welcome ${newMember.displayName}!`;
-        const fontFace = 'monospace';
-        const fontSize = this.canvasUtils.getFontSizeToFit(welcomeText, fontFace, canvas.width);
+        const welcomeText = `Hi, ${newMember.displayName}!`;
+        const welcomeTextLeftMargin = 2 * (userAva.radius + userAva.x);
+        const fontFace = 'Impact';
+        const fontSize = this.canvasUtils.getFontSizeToFit(
+            welcomeText, fontFace, canvas.width - welcomeTextLeftMargin
+        );
         ctx.font = `${fontSize}px ${fontFace}`;
-        ctx.fillStyle = '#f0fc00';
-        ctx.fillText(welcomeText, 0, canvas.height);
-
+        ctx.fillStyle = '#6395ea';
+        ctx.fillText(
+            welcomeText, 
+            welcomeTextLeftMargin, 
+            canvas.height * 0.8 // if 1 text may overflow over the bottom if the image
+        ); 
         return canvas;
     }
 

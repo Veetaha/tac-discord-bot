@@ -22,23 +22,23 @@ export class IteratorService {
         return result;
     }
 
-    /**
-     * Efficiently (linearly) searches for a value in values emmited by the
-     * given iterator.
-     * 
-     * @param iterator   Iterator that emits values to search in.
-     * @param isTargetFn Predicate that returns `true` if the given 
-     *                   `value` matches search criteria.
-     *  
-     * @returns `undefined` if nothing was found, otherwise found value.
-     */
-    find<TValue>(iterator: Iterator<TValue>, isTargetFn: (value: TValue) => boolean) {
-        let value: TValue;
-        while(!({value} = iterator.next()).done) {
-            if (isTargetFn(value)) return value;
-        }
-        return void 0;
-    }
+    // /**
+    //  * Efficiently (linearly) searches for a value in values emmited by the
+    //  * given iterator.
+    //  * 
+    //  * @param iterator   Iterator that emits values to search in.
+    //  * @param isTargetFn Predicate that returns `true` if the given 
+    //  *                   `value` matches search criteria.
+    //  *  
+    //  * @returns `undefined` if nothing was found, otherwise found value.
+    //  */
+    // find<TValue>(iterator: Iterator<TValue>, isTargetFn: (value: TValue) => boolean) {
+    //     let value: TValue;
+    //     while(!({value} = iterator.next()).done) {
+    //         if (isTargetFn(value)) return value;
+    //     }
+    //     return void 0;
+    // }
 
     /**
      * Returns the maximum element that was emitted by `iterator`, if iterator

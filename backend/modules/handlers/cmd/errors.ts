@@ -11,3 +11,9 @@ export class EvalPermissionError extends UserError {
         super({title: 'Eval permission error.', description});
     }
 }
+
+// export class FetchError extends UserError {
+//     constructor(description: string) {
+//         super({title: 'Fetch error.', description});
+//     }
+// }

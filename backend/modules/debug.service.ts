@@ -24,7 +24,7 @@ export class DebugService {
     /**
      * Checks that `Boolean(truthy) === true`, otherwise shutdowns and logs `truthy`.
      * 
-     * @param truthy Suspect to be checked for truthiness.
+     * @param getSuspect Function that returns suspect to be checked for truthiness.
      */
     @NoopInProduction
     assert(getSuspect: () =>unknown) {
@@ -37,7 +37,7 @@ export class DebugService {
     /**
      * Checks that `Boolean(truthy) === false`, otherwise shutdowns and logs `falsy`.
      * 
-     * @param falsy Suspect to be checked for truthiness.
+     * @param getSuspect Function that returns suspect to be checked for truthiness.
      */
     @NoopInProduction
     assertFalsy(getSuspect: () => unknown) {
@@ -52,7 +52,7 @@ export class DebugService {
      * and logs returned `Joi.ValidateError` object.
      * 
      * @param suspect   Value of to be checked for type conformance.
-     * @param typeDescr `Joi.Schema` that `suspect` will be checked to match to.
+     * @param schema `Joi.Schema` that `suspect` will be checked to match to.
      */
     @NoopInProduction
     assertMatches(suspect: unknown, schema: Joi.Schema) {

@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import Axios from 'axios';
 import { Service } from "typedi";
-
+import { URLSearchParams } from 'url';
 
 import { RandomPonyResult } from './the-pony-api.interfaces';
-import { URLSearchParams } from 'url';
+
 
 @Service()
 export class ThePonyApiService {
@@ -16,7 +16,7 @@ export class ThePonyApiService {
      * Pre: Each string in `tags` doesn't contain coma `,`.
      * @param tags 
      */
-    async fetchRandomPony(tags: string[] = []) {
+    async tryFetchRandomPony(tags: string[] = []) {
         return Axios
             .get<RandomPonyResult>(`${this.apiPrefix}/pony/random`, {
                 params: new URLSearchParams({ q: tags })

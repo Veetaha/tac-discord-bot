@@ -2,33 +2,35 @@ import Joi from 'typesafe-joi';
 import Fs from 'fs';
 import Path from 'path';
 import Ds from 'discord.js';
-import Util from 'util';
+import NodeUtil from 'util';
 import { Service } from "typedi";
 import { Nullable } from 'ts-typedefs';
+import humanizeDuration from 'humanize-duration';
 
-import { CmdEndpoint       } from "@modules/discord/meta/cmd-endpoint.decorator";
-import { CmdHandlerFnCtx   } from "@modules/discord/interfaces";
-import { ThePonyApiService } from "@modules/the-pony-api/the-pony-api.service";
-import { MetadataStorage   } from '@modules/discord/meta/metadata-storage.class';
-import { CmdHandlerWrapper } from '@modules/discord/cmd-handler-wrapper.class';
+import { CmdEndpoint        } from "@modules/discord/meta/cmd-endpoint.decorator";
+import { CmdHandlerFnCtx    } from "@modules/discord/interfaces";
+import { ThePonyApiService  } from "@modules/the-pony-api/the-pony-api.service";
+import { MetadataStorage    } from '@modules/discord/meta/metadata-storage.class';
+import { CmdHandlerWrapper  } from '@modules/discord/cmd-handler-wrapper.class';
+import { CmdHandlingService } from '@modules/discord/cmd-handling.service';
+import { ConfigService      } from '@modules/config.service';
 
 import { UnknownCmdError, EvalPermissionError } from './errors';
-import { CmdHandlingService } from '@modules/discord/cmd-handling.service';
-import { ConfigService } from '@modules/config.service';
-import humanizeDuration from 'humanize-duration';
+import { DsUtilsService } from '../ds-utils.service';
 
 
 @Service()
 export class StatelessCmdHandlingService {
     readonly cmdSyntaxRefference = Fs
         .readFileSync(Path.join(__dirname, 'command-syntax.md'), 'utf8')
-        .replace(/\${cmdPrefix}/g, this.cmdHandling.cmdPrefix);
+        .replace(/\$\{cmdPrefix\}/g, this.cmdHandling.cmdPrefix);
 
     constructor(
         private readonly thePonyApi:      ThePonyApiService,
         private readonly metadataStorage: MetadataStorage,
         private readonly cmdHandling:     CmdHandlingService,
-        private readonly config:          ConfigService
+        private readonly config:          ConfigService,
+        private readonly dsUtils:         DsUtilsService
     ) {}
 
     @CmdEndpoint({
@@ -52,7 +54,7 @@ export class StatelessCmdHandlingService {
         }
     })
     async onPony({msg, params: tags}: CmdHandlerFnCtx<string[]>){
-        const pony = await this.thePonyApi.fetchRandomPony(tags);
+        const pony = await this.thePonyApi.tryFetchRandomPony(tags);
         const footer = { text: 'Powered by theponyapi.com (cracked by Veetaha)' };
 
         return msg.reply(new Ds.RichEmbed(pony == null 
@@ -81,21 +83,21 @@ export class StatelessCmdHandlingService {
                     description: "JavaScript source code to evaluate at runtime."
                 }, {
                     name: 'obj_depth',
-                    description: "Defines the depth of objects traversal to display."
+                    description: "Defines the depth of objects traversal to display.",
+                    schema: Joi.number()
                 }
             ]
         }
     })
-    async onEval({msg, params: [script, depth = 2]}: CmdHandlerFnCtx<[string, Nullable<number>]>) {
+    async onEval({msg, params: [script, depth = 1]}: CmdHandlerFnCtx<[string, Nullable<number>]>) {
         if (this.config.evalUserId !== msg.member.id) {
             throw new EvalPermissionError('Hackers have no rights to call eval.');
         }
-        await msg.channel.send(Util.inspect(await eval(script), { 
+        const inspected = NodeUtil.inspect(await eval(script), { 
             showHidden: true, sorted: true, getters: true, depth
-        }));
+        });
+        await this.dsUtils.sendMsgInChunksToFit(msg.channel, inspected);
     }
-
-
 
     @CmdEndpoint({
         cmd: ['help', 'h'],
@@ -151,11 +153,11 @@ export class StatelessCmdHandlingService {
     }
     private getCommandHelpMd(cmdHandler: CmdHandlerWrapper) {
         const top     = `**${'```'}${cmdHandler.getUsageTemplate()}${'```'}**\n`;
-        const aliases = `**Aliases:** *${cmdHandler.cmd.join('*, *')}*\n`;
-        const cooldown = cmdHandler.cooldownTime == null ? '' 
-            : `**Cooldown**: ${'`'}${humanizeDuration(cmdHandler.cooldownTime)}${'`'}\n`;
+        const aliases = `**❯ Aliases:** *${cmdHandler.cmd.join('*, *')}*\n`;
+        const cooldown  = cmdHandler.cooldownTime == null ? '' 
+            : `**❯ Cooldown**: ${'`'}${humanizeDuration(cmdHandler.cooldownTime)}${'`'}\n`;
         const params  = cmdHandler.params == null ? '' 
-            : `**Parameters:**:\n` + cmdHandler.params.definition
+            : `**❯ Parameters:**:\n` + cmdHandler.params.definition
                 .reduce((pstr, param, i) => pstr + 
                     ` ${'`'}${cmdHandler.params!.getParamUsageTemplate(i)}${'`'} ${param.description}\n`,
                     ''

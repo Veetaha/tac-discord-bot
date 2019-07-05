@@ -88,14 +88,14 @@ export class CmdHandlingService {
     }    
     private getCmdAndParamsOrFail(trimmedMsgContent: string) {
         const unprefixedMsg = trimmedMsgContent.slice(this.cmdPrefix.length);
-        let cmdEndIndex = unprefixedMsg.search(/[^\w\d_-]/i);
+        let cmdEndIndex = unprefixedMsg.search(/\s/);
         if (cmdEndIndex < 0) {
             cmdEndIndex = unprefixedMsg.length;
         }
         return {
             cmd: unprefixedMsg.slice(0, cmdEndIndex),
             params: [...CmdParamsParser.parseParamsOrFail(
-                unprefixedMsg.slice(cmdEndIndex), '\\', '"'
+                unprefixedMsg.slice(cmdEndIndex + 1), '\\', '"'
             )]
         };
     }

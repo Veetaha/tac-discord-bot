@@ -137,7 +137,7 @@ export class CmdHandlerWrapper implements CmdMetadata {
         if (this.params == null) {
             if (params.length > 0) throw new CmdInvalidParamsError(
                 `Command **"${cmd}"** expects ${'`'}0${'`'} parameters.\n` +
-                `*Usage:* ${'``'}${this.getUsageTemplate()}${'```'}`
+                `*Usage:* ${'```'}${this.getUsageTemplate()}${'```'}`
             ); 
             return [];
         }

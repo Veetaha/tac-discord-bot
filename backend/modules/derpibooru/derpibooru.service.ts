@@ -1,9 +1,11 @@
-import noop from 'lodash/noop';
 import { Service } from "typedi";
 import { Nullable, Obj } from 'ts-typedefs';
 
+import { LoggingService } from '@modules/logging.service';
+import { ConfigService  } from '@modules/config.service';
+import { LogPerformance } from '@modules/utils/log-performance.decorator';
+
 import { DerpibooruImg } from './derpibooru.interfaces';
-import { ConfigService } from '@modules/config.service';
 
 const Dinky = require('dinky.js');
 
@@ -11,9 +13,8 @@ const Dinky = require('dinky.js');
 export class DerpibooruService {
     private readonly dinkyApi: Obj<any>;
 
-    constructor(config: ConfigService) {
+    constructor(config: ConfigService, private readonly log: LoggingService) {
         this.dinkyApi = Dinky({ key: config.derpibooruApiKey });
-
     }
 
     /**
@@ -22,16 +23,10 @@ export class DerpibooruService {
      * Pre: Each string in `tags` doesn't contain coma `,`.
      * @param tags 
      */
+    @LogPerformance
     async tryFetchRandomPony(tags: string[] = []): Promise<Nullable<DerpibooruImg>> {
-        console.time('thePonyApi');
-        const result = await this.dinkyApi.search(tags).random();
-        return result == null 
-            ? null 
-            : this.dinkyApi
-                .images()
-                .id(result.id)
-                .catch(noop)
-                .finally(() => console.timeEnd('thePonyApi'));
+        const result = await this.dinkyApi.search(tags.length === 0 ? '*': tags).random();
+        return result && this.dinkyApi.images().id(result.id).catch(this.log.error);
     }
 
 

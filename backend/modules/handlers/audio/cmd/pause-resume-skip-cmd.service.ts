@@ -16,7 +16,7 @@ export class PauseResumeSkipCmdService {
     })
     async onPauseMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.pauseCurrentTrackOrFail();
-        await msg.reply(new Ds.RichEmbed({
+        await msg.channel.send(new Ds.RichEmbed({
             description: `Track ${this.audioQueue.getCurrentTrack()!.toMd()} was set on pause.`
         }));
     }
@@ -27,7 +27,7 @@ export class PauseResumeSkipCmdService {
     })
     async onResumeMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.resumeCurrentTrackOrFail();
-        await msg.reply(new Ds.RichEmbed({
+        await msg.channel.send(new Ds.RichEmbed({
             description: `Track ${this.audioQueue.getCurrentTrack()!.toMd()} was resumed.`
         }));
     }

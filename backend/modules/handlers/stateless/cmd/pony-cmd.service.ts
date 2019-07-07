@@ -28,20 +28,20 @@ export class PonyCmdService {
     })
     // TODO: escape returned video/image tags for markdown
     async onPony({msg, params: tags}: CmdHandlerFnCtx<string[]>){
-        const imgOrVid = await this.derpibooruApi.tryFetchRandomPony(tags);
-        if (imgOrVid == null) {
-            return msg.reply(this.createNotFoundReply(tags));
+        const media = await this.derpibooruApi.tryFetchRandomPonyMedia(tags);
+        if (media == null) {
+            return msg.channel.send(this.createNotFoundReply(tags));
         }
         const defaultEmbed = new Ds.RichEmbed({
             title:       `Random pony for **${msg.member.displayName}**`,
-            description: `**Tags:** *${'```'}${imgOrVid.tags}${'```'}*`,
+            description: `**Tags:** *${'```'}${media.tags}${'```'}*`,
             footer:      this.footer,
-            url:         `https://derpibooru.org/images/${imgOrVid.id}`
+            url:         `https://derpibooru.org/images/${media.id}`
         });
-        const url = `https:${imgOrVid.representations.full}`;
-        return imgOrVid.mimeType.startsWith('image')
-            ? msg.reply(defaultEmbed.setImage(url))
-            : msg.reply(defaultEmbed).then(() => msg.channel.send(url));
+        const url = `https:${media.representations.full}`;
+        return media.mimeType.startsWith('image')
+            ? msg.channel.send(defaultEmbed.setImage(url))
+            : msg.channel.send(defaultEmbed).then(() => msg.channel.send(url));
     }
     private createNotFoundReply(tags: string[]) {
         return new Ds.RichEmbed({

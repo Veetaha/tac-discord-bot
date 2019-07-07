@@ -16,4 +16,4 @@ const guildMemberAddHandling = Container.get(GuildMemberAddHandlingService);
 Container.get(DsClientService).init().run().then(
     () => guildMemberAddHandling.init(),  
     err => log.error(err, `bootstrapping error, discord bot failed to log in`)
-);
+);                                                                            

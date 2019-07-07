@@ -28,13 +28,13 @@ export class PacketPassesCmdService {
     })
     onPacketPasses({msg, params: [passes]}: CmdHandlerFnCtx<[Nullable<number>]>){
         if (passes == null) {
-            return msg.reply(
+            return msg.channel.send(
                 `Current packet passes amount setting is ${
                 '`'}${this.audioPlayer.getPacketPasses()}${'`'}.`
             );
         }
         this.audioPlayer.setPacketPasses(passes);
-        return msg.reply(
+        return msg.channel.send(
             `Current audio packet passes amount was set to ${'`'}${passes}${'`'}.\n` +
             `It will be applied as soon as the next track gets to be played.`
         );

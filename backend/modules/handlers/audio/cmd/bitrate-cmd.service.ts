@@ -35,7 +35,7 @@ export class BitrateCmdService {
     async onBitrate({msg, params:[bitrate]}: CmdHandlerFnCtx<[Nullable<number>]>) {
         if (bitrate == null) {
             const currentTrack = this.audioQueue.getCurrentTrack();
-            return msg.reply(
+            return msg.channel.send(
                 `Current audio bitrate setting is at ${
                 '`'}${this.audioPlayer.getBitrate()} kbps${'`'}.\n` +
                 (currentTrack == null ? '' : 
@@ -44,7 +44,7 @@ export class BitrateCmdService {
             );
         }
         this.audioPlayer.setBitrate(bitrate);
-        return msg.reply(`Current audio bitrate was set to ${'`'}${bitrate} kbps${'`'}`);
+        return msg.channel.send(`Current audio bitrate was set to ${'`'}${bitrate} kbps${'`'}`);
     }
 
 

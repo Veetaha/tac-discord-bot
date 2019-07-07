@@ -24,13 +24,13 @@ export class VolumeCmdService {
     })
     async onVolume({msg, params: [volume]}: CmdHandlerFnCtx<[Nullable<number>]>) {
         if (volume == null) {
-            await msg.reply(
+            await msg.channel.send(
                 `Current music volume is ${'`'}${
                 this.audioPlayer.getVolume() * 100}${'`'}`
             );
             return;
         }
         this.audioPlayer.setVolume(volume / 100);
-        await msg.reply(`Current music volume was set to ${'`'}${volume}${'`'}`);
+        await msg.channel.send(`Current music volume was set to ${'`'}${volume}${'`'}`);
     }
 }

@@ -1,7 +1,7 @@
 {
-    "name": "basic-ts-nodejs-template",
+    "name": "tac-discord-bot",
     "version": "1.0.0",
-    "description": "Basic template project to start programming with TypeScript and NodeJS",
+    "description": "Discord bot for Times are Changing UE4 game Discord server.",
     "main": "build/backend/app.ts",
     "scripts": {
         "backend:container:start": "(cd backend && ts-node --transpile-only -r tsconfig-paths/register app.ts)",
@@ -13,7 +13,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Veetaha/basic-ts-nodejs-template.git"
+        "url": "git+https://github.com/Veetaha/tac-discord-bot.git"
     },
     "keywords": [
         "template",
@@ -23,9 +23,9 @@
     "author": "Veetaha",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/Veetaha/basic-ts-nodejs-template/issues"
+        "url": "https://github.com/Veetaha/tac-discord-bot/issues"
     },
-    "homepage": "https://github.com/Veetaha/basic-ts-nodejs-template#readme",
+    "homepage": "https://github.com/Veetaha/tac-discord-bot#readme",
     "devDependencies": {
         "@types/chai": "latest",
         "@types/dotenv": "latest",

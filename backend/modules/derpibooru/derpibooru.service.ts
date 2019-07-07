@@ -25,9 +25,6 @@ export class DerpibooruService {
      */
     @LogPerformance
     async tryFetchRandomPony(tags: string[]): Promise<Nullable<DerpibooruImg>> {
-        const result = await this.dinkyApi.search(tags).random();
-        return result && this.dinkyApi.images().id(result.id).catch(this.log.error);
+        return this.dinkyApi.search(tags).random().catch(this.log.error);
     }
-
-
 }

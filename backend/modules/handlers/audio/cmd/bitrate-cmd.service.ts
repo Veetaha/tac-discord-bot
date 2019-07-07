@@ -27,7 +27,7 @@ export class BitrateCmdService {
             definition: [{ 
                 name: 'value_kbps',
                 description: 
-                'New bitrate value to set in kilobytes per second (min: `8`, max: `192000`)',
+                'New bitrate value to set in kilobytes per second (min: `8`, max: `192`)',
                 schema: Joi.number().integer().min(8).max(192)
             }]
         }

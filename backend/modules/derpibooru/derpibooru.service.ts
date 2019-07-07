@@ -21,7 +21,7 @@ export class DerpibooruService {
      * Fetches random pony based on the given tags (if there are any).
      * 
      * Pre: Each string in `tags` doesn't contain coma `,`.
-     * @param tags 
+     * @param tags Array of tags to search pony image with.
      */
     @LogPerformance
     async tryFetchRandomPony(tags: string[]): Promise<Nullable<DerpibooruImg>> {

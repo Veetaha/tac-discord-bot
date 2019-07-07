@@ -47,11 +47,6 @@ npm run dev
     * `/interfaces` - A directory that contains your type and interfaces declarations.
         * `index.ts` - File the reexports all interfaces defined in this directory. 
         It exports only backend-related type definitions and reexports `@common/interfaces`.
-    * `/services` - A director the contains yoor app `'typedi'` services (singleton classes)
-                    that participate in dependency injection system.
-        * `debug.ts` - Example module that provides basic logging and assertions functionality.
-        * `/cmd-handlers` - A directory that contains global discord command handling services.
-
     * `/modules` - A directory that contains your app modules (classes, utils functions etc.).
         `/discord` - A directory that contains low level discord command handling logic.
     * `/tests` - A directory that contains all your unit tests.

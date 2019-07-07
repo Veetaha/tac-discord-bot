@@ -7,8 +7,6 @@ export class CanvasService {
     /**
      * Returns approximate fontsize in pixels (1px accuracy) that the given `text`
      * with the given `fontFace` should have in order to fit into a box with `maxWidth`.
-     * Returned font size will never let `text` to overflow `maxWidth` even by the
-     * approximation error, this method chooses to return less font size that bigger.
      * 
      * @param text     String of text to get font size for.
      * @param fontFace Font family used to display the text.

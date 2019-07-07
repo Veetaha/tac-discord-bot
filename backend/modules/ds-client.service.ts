@@ -1,11 +1,11 @@
-import _ from 'lodash';
 import Ds from 'discord.js';
+import once from 'lodash/once';
 import { Service } from "typedi";
 
 import { LoggingService } from './logging.service';
 import { ConfigService  } from './config.service';
 import { DsUtilsService } from './handlers/ds-utils.service';
-import { CmdHandlingService, HandlingResult } from './discord/cmd-handling.service';
+import { CmdHandlingService } from './discord-cmd/cmd-handling.service';
 import { DebugService } from './debug.service';
 
 @Service()
@@ -46,9 +46,7 @@ export class DsClientService {
         });
         client.on('message', async msg => {
             log.info(msg.content, 'Received Message: ');
-            const result = await this.cmdHandling.tryHandleCmd(msg);
-            if (result !== HandlingResult.UnknownCommand) return;
-            await msg.reply(`Unknown command "${msg.content}".`);
+            void await this.cmdHandling.tryHandleCmd(msg);
         });
         if (config.isDevelopmentMode) {    
             client.on('debug', this.log.info);
@@ -63,7 +61,7 @@ export class DsClientService {
         return this.client.login(this.config.discordBotToken);
     }
 
-    private readonly onExit = _.once(() => {
+    private readonly onExit = once(() => {
         if (this.client.status === 5 ) return; // DISCONNECTED https://discord.js.org/#/docs/main/stable/typedef/Status
         void this.client.destroy()
             .then(

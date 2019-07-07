@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as Joi from 'typesafe-joi';
 import { Service } from 'typedi';
 

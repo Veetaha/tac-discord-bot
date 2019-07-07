@@ -1,5 +1,6 @@
 import Colors from 'colors/safe'; // import it only this way (https://github.com/Microsoft/TypeScript/issues/29687)
 import { Service } from "typedi";
+import Moment from 'moment';
 
 @Service()
 export class LoggingService {
@@ -8,6 +9,24 @@ export class LoggingService {
         return process.stdout.write(Colors.bold(Colors.gray(
             `${new Date().toUTCString()} │ `
         )));
+    }
+
+    /** 
+     * Starts timer in order to measure some code performance. 
+     * Returns a function that stops timer and logs given message with duration info.
+     * Logs `minutes:seconds:milliseconds`.
+     */
+    time = (startMessage: string) => {
+        const startTime = Date.now();
+        this.logCurrentTime();
+        console.log(Colors.cyan(`Begin: ${startMessage}`));
+        return (endMessage: string) => {
+            const elapsed = Moment.duration(Date.now() - startTime).format(
+                `m [minutes], s [seconds], S [milliseconds]`
+            );
+            this.logCurrentTime();
+            console.log(Colors.cyan(`End: ${endMessage} ${elapsed}`));
+        };
     }
 
     /**

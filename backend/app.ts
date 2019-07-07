@@ -1,4 +1,5 @@
 import '@app/polyfills';
+import 'moment-duration-format'; // moment plugin
 import Container from 'typedi';
 
 import { DsClientService } from '@modules/ds-client.service';

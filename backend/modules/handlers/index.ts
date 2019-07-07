@@ -1,6 +1,10 @@
-import Container from 'typedi';
-import { GuildMemberAddHandlingService } from './guild-member-add-handling.service';
+export * from './audio/cmd/bitrate-cmd.service';
+export * from './audio/cmd/music-cmd.service';
+export * from './audio/cmd/packet-passes-cmd.service';
+export * from './audio/cmd/pause-resume-skip-cmd.service';
+export * from './audio/cmd/volume-cmd.service';
 
-export * from './cmd';
-
-void Container.get(GuildMemberAddHandlingService); // trigger service construction
+export * from './stateless/cmd/eval-cmd.service';
+export * from './stateless/cmd/help/help-cmd.service';
+export * from './stateless/cmd/pink-cmd.service';
+export * from './stateless/cmd/pony-cmd.service';

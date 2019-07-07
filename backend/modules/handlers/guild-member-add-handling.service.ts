@@ -49,11 +49,16 @@ export class GuildMemberAddHandlingService {
     }
 
     private async sendWelcomePicToNewMember(newMember: Ds.GuildMember) {
-        const canvas = await this.createWelcomeMemberCanvas(newMember);
-        return this.dsClient.getMainTextChannel().send(
-            `Welcome to the server, **${newMember.displayName}**!`, 
-            new Ds.Attachment(canvas.toBuffer(), 'welcome-img.png')
-        );
+        const {cmdPrefix} = this.config.cmdHandlingParams;
+        const imgBuf = (await this.createWelcomeMemberCanvas(newMember)).toBuffer();
+        return this.dsClient.getMainTextChannel().send(new Ds.RichEmbed({
+            title: `Welcome to the server, **${newMember.displayName}**!`,
+            description: 
+                `Send ${'`'}${cmdPrefix}help${'`'} in order to get available commands refference.`, 
+            image: { url: 'attachment://welcome-img.png'},
+            file: new Ds.Attachment(imgBuf, 'welcome-img.png'),
+            color: 15400704
+        }));
     }
     readonly welcomeImg = {
         userAva: {

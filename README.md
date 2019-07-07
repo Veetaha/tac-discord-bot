@@ -3,6 +3,11 @@
 [![Build Status](https://travis-ci.com/Veetaha/tac-discord-bot.svg?branch=master)](https://travis-ci.com/Veetaha/tac-discord-bot)
 [![Coverage Status](https://coveralls.io/repos/github/Veetaha/tac-discord-bot/badge.svg?branch=master)](https://coveralls.io/github/Veetaha/tac-discord-bot?branch=master)
 
+This is a discord bot for [Times are Changing UE4 game Discord server](https://discord.gg/fMW3dRX).  
+It is able to play music from youtube in your voice channel, 
+search random pony images for you and greet newcommers with custom welcomming image
+generated specially for them.
+
 
 ## Preliminary installations
 * [`docker`](https://docs.docker.com/install/)
@@ -43,10 +48,7 @@ npm run dev
     * `tsconfig.json` - TypeScript compiler configuration file. It is set up to provide the most severe type checks level by default.
     * `polyfills.ts` - File that imports all your polyfills. Be sure to import it at the first line of your app.
                     
-    * `app.ts` - Your NodeJS app entry point.
-    * `/interfaces` - A directory that contains your type and interfaces declarations.
-        * `index.ts` - File the reexports all interfaces defined in this directory. 
-        It exports only backend-related type definitions and reexports `@common/interfaces`.
+    * `app.ts` - NodeJS app entry point.
     * `/modules` - A directory that contains your app modules (classes, utils functions etc.).
         `/discord` - A directory that contains low level discord command handling logic.
     * `/tests` - A directory that contains all your unit tests.

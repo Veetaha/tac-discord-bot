@@ -5,21 +5,17 @@ import { LoggingService } from "@modules/logging.service";
 
 const log = Container.get(LoggingService);
 
-export const LogPerformance: MethodDecorator = (protoOrCls, methodName, descr) => {
+export const LogPerformance: MethodDecorator = (_protoOrCls, methodName, descr) => {
     const method = descr.value!;
     let i = 0;
-    descr.value = function(this: typeof protoOrCls, ...params: Parameters<typeof method>) {
-        const callId = `${methodName}() #${++i}`;
-        const stopTimer = log.time(callId);
-        let retVal: ReturnType<typeof method>;
+    descr.value = function(...params) {
+        const stopTimer = log.time(`${methodName}() #${++i}`);
+        let retVal;
         try {
             return retVal = method.apply(this, params);
-        }
-        finally {
-            if (retVal instanceof Promise) {
-                return retVal.finally(() => stopTimer(`${callId} runtime:`));
-            }
-            stopTimer(`${callId} runtime:`);
+        } finally {
+            if (retVal instanceof Promise) return retVal.finally(stopTimer);
+            stopTimer();
         }
     };
     return descr;

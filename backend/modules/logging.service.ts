@@ -14,18 +14,17 @@ export class LoggingService {
     /** 
      * Starts timer in order to measure some code performance. 
      * Returns a function that stops timer and logs given message with duration info.
-     * Logs `minutes:seconds:milliseconds`.
      */
-    time = (startMessage: string) => {
+    time = (callSignature: string) => {
         const startTime = Date.now();
         this.logCurrentTime();
-        console.log(Colors.cyan(`Begin: ${startMessage}`));
-        return (endMessage: string) => {
+        console.log(Colors.cyan(`Time begin: ${callSignature}`));
+        return () => {
             const elapsed = Moment.duration(Date.now() - startTime).format(
                 `m [minutes], s [seconds], S [milliseconds]`
             );
             this.logCurrentTime();
-            console.log(Colors.cyan(`End: ${endMessage} ${elapsed}`));
+            console.log(Colors.cyan(`Time end: ${callSignature} runtime: ${elapsed}`));
         };
     }
 

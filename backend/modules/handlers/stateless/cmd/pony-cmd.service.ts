@@ -10,7 +10,9 @@ import { CmdHandlerFnCtx } from "@modules/discord-cmd/cmd.interfaces";
 export class PonyCmdService {
     constructor(private readonly derpibooruApi: DerpibooruService) {}
 
-    private readonly  footer = { text: 'Powered by dinky.js (cracked by Veetaha)' };
+    private readonly  footer = { 
+        text: 'Powered by derpibooru.org (dinky.js), cracked by Veetaha.' 
+    };
 
     @CmdEndpoint({
         cmd:         ['pony'],

@@ -47,7 +47,7 @@
         "axios": "^0.19.0",
         "canvas": "^2.5.0",
         "colors": "latest",
-        "dinky.js": "^0.7.1",
+        "dinky.js": "^0.7.2",
         "discord.js": "^11.5.1",
         "dotenv": "latest",
         "erlpack": "github:discordapp/erlpack",

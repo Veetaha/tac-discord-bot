@@ -18,17 +18,9 @@ export class CanvasService {
      */
     getFontSizeToFit(text: string, fontFace: string, maxWidth: number) {
         const ctx = Canvas.createCanvas(1, 1).getContext('2d');
-        let lo = 1;
-        let hi = maxWidth;
-        while (lo < hi) {
-            const mid = Math.floor((lo + hi) / 2);
-            ctx.font = `${mid}px ${fontFace}`;
-            const midWidth = ctx.measureText(text).width;
-            if (maxWidth === midWidth) return mid;
-            if (midWidth > maxWidth) hi = mid - 1;
-            else lo = mid + 1;
-        }
-        ctx.font = `${hi}px ${fontFace}`;
-        return ctx.measureText(text).width <= maxWidth ? hi : hi - 1;
+        const sampleSize = 100; // more may cause overflow, but may provide better accuracy
+        ctx.font = `${sampleSize}px ${fontFace}`;
+        const sampleWidth = ctx.measureText(text).width;
+        return Math.floor(sampleSize * (maxWidth / sampleWidth));
     }
 }

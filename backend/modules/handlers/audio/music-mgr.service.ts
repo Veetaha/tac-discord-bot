@@ -81,7 +81,7 @@ export class MusicMgrService {
         };
     }
 
-    /** Returns duration formatted in colon separated. */
+    /** Returns duration in a colon separated string format. */
     formatDuration(duration: number) {
         return Moment.duration(duration).format(`d[d] h:mm:ss`, {
             trim: 'large',

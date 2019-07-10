@@ -19,11 +19,11 @@ export class HelpCmdService {
 
     constructor(
         private readonly metadataStorage: MetadataStorage,
-        {cmdHandlingParams: {cmdPrefix}}: ConfigService
+        private readonly config:          ConfigService
     ) {
         this.cmdSyntaxRefference = Fs
             .readFileSync(Path.join(__dirname, 'command-syntax.md'), 'utf8')
-            .replace(/\$\{cmdPrefix\}/g, cmdPrefix);
+            .replace(/\$\{cmdPrefix\}/g, config.cmdHandlingParams.cmdPrefix);
     }
 
     @CmdEndpoint({
@@ -76,8 +76,9 @@ export class HelpCmdService {
         for (const handler of this.metadataStorage.getHandlers()) {
             commands += `${handler.getUsageTemplate()}\n`;
         }
-        return `Use ${'`'}--help <cmd>${'`'} in order to view detailed command desription.\n` + 
-            `**${'```'}${commands}${'```'}**`;
+        const {cmdPrefix} = this.config.cmdHandlingParams;
+        return `Use ${'`'}${cmdPrefix}help <cmd>${'`'} in order to view detailed ` +
+            `command desription.\n **${'```'}${commands}${'```'}**`;
     }
     private getCommandHelpMd(cmdHandler: CmdHandlerWrapper) {
         const top     = `**${'```'}${cmdHandler.getUsageTemplate()}${'```'}**\n`;

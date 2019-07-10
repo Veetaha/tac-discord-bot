@@ -38,9 +38,7 @@ export class GuildMemberAddHandlingService {
     }
 
     private async setNewMemberInitialRoles(newMember: Ds.GuildMember) {
-        
-
-        await newMember.addRoles(
+        return newMember.addRoles(
             this.initialMemberRoles.filter(role => !newMember.roles.has(role.id)), 
             `All new members get ${this.initialMemberRoles.length === 1 ? 
                 'this role' : 'these roles'

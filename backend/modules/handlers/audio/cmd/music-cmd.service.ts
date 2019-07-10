@@ -27,7 +27,7 @@ export class MusicCmdService {
         cmd: ['music', 'm'],
         cooldownTime: 1000 * 5, 
         description:
-             `Plays music or displays current music queue (if no paramteres given).` +
+             `Plays music or displays current music queue (if no parameters given).` +
              `If there is already a track playing your order is scheduled to be the last in the queue. ` +
              `Bot connects to your voice channel and plays music that you request.`,
         params: { 

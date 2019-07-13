@@ -2,8 +2,8 @@ import Ds from 'discord.js';
 import { Service } from "typedi";
 
 import { UserError      } from './discord-cmd/errors/user-error.class';
-import { LoggingService } from './logging.service';
-import { ConfigService  } from './config.service';
+import { LoggingService } from './logging/logging.service';
+import { ConfigService  } from './config/config.service';
 
 @Service()
 export class ErrorService {

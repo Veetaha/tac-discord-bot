@@ -5,7 +5,7 @@ import { Nullable } from "ts-typedefs";
 
 import { CmdEndpoint     } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
 import { CmdHandlerFnCtx } from "@modules/discord-cmd/cmd.interfaces";
-import { ConfigService   } from '@modules/config.service';
+import { ConfigService   } from '@modules/config/config.service';
 
 import { AudioQueueService  } from "../audio-queue.service";
 import { AudioTrack         } from '../audio-track.class';

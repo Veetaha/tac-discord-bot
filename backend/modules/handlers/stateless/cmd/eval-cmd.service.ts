@@ -5,7 +5,7 @@ import { Nullable } from "ts-typedefs";
 
 import { CmdEndpoint } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
 import { CmdHandlerFnCtx } from "@modules/discord-cmd/cmd.interfaces";
-import { ConfigService } from '@modules/config.service';
+import { ConfigService } from '@modules/config/config.service';
 import { DsUtilsService } from '@modules/handlers/ds-utils.service';
 
 import { EvalPermissionError } from "../stateless.errors";

@@ -1,7 +1,7 @@
 import Ds from 'discord.js';
 import Container from 'typedi';
 
-import { ConfigService } from '@modules/config.service';
+import { ConfigService } from '@modules/config/config.service';
 
 interface UserErrorParams {
     /** Short name of the kind of this error. */

@@ -1,6 +1,6 @@
 import Ds from 'discord.js';
 import Moment from 'moment';
-import { LoggingService } from '@modules/logging.service';
+import { LoggingService } from '@modules/logging/logging.service';
 
 import { Service } from "typedi";
 

@@ -5,13 +5,13 @@ import { Service } from "typedi";
 import { Nullable } from 'ts-typedefs';
 import humanizeDuration from 'humanize-duration';
 
-import { CmdEndpoint        } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
-import { CmdHandlerFnCtx    } from "@modules/discord-cmd/cmd.interfaces";
-import { MetadataStorage    } from '@modules/discord-cmd/meta/metadata-storage.class';
-import { CmdHandlerWrapper  } from '@modules/discord-cmd/cmd-handler-wrapper.class';
+import { CmdEndpoint       } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
+import { CmdHandlerFnCtx   } from "@modules/discord-cmd/cmd.interfaces";
+import { MetadataStorage   } from '@modules/discord-cmd/meta/metadata-storage.class';
+import { CmdHandlerWrapper } from '@modules/discord-cmd/cmd-handler-wrapper.class';
+import { ConfigService     } from '@modules/config/config.service';
 
 import { UnknownCmdError } from '../../stateless.errors';
-import { ConfigService } from '@modules/config.service';
 
 @Service()
 export class HelpCmdService {

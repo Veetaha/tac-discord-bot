@@ -2,33 +2,32 @@ import Canvas from 'canvas';
 import Ds from 'discord.js';
 import { Service } from "typedi";
 
-import { DsClientService     } from "@modules/ds-client.service";
+import { AppService          } from "@modules/app.service";
 import { DebugService        } from "@modules/debug.service";
-import { LoggingService      } from '@modules/logging.service';
-import { ConfigService       } from '@modules/config.service';
+import { LoggingService      } from '@modules/logging/logging.service';
+import { ConfigService       } from '@modules/config/config.service';
 import { AssetService, ImgId } from '@modules/asset.service';
 import { CanvasService       } from '@modules/canvas.service';
 
 
 @Service()
 export class GuildMemberAddHandlingService {
-    private initialMemberRoles!: Ds.Role[];
+    private readonly initialMemberRoles!: Ds.Role[];
 
     constructor(
         private readonly canvasUtils: CanvasService,
-        private readonly assets:   AssetService,
-        private readonly config:   ConfigService,
-        private readonly dsClient: DsClientService, 
-        private readonly debug:    DebugService,
-        private readonly log:      LoggingService
-    ) {}
-
-    init() {
-        const mainGuild = this.dsClient.getMainGuild();
+        private readonly assets:      AssetService,
+        private readonly config:      ConfigService,
+        private readonly app:         AppService, 
+        private readonly debug:       DebugService,
+        private readonly log:         LoggingService,
+        dsClient: Ds.Client,
+    ) {
+        const mainGuild = this.app.getMainGuild();
         this.initialMemberRoles = this.config.mainGuild.initialMemberRoles.map(
             roleName => mainGuild.roles.find(role => role.name === roleName)
         );
-        this.dsClient.client.on('guildMemberAdd', newMember => Promise.all([
+        dsClient.on('guildMemberAdd', newMember => Promise.all([
             this.setNewMemberInitialRoles(newMember),
             this.sendWelcomePicToNewMember(newMember)
         ]).catch(err => this.log.error(err, `Failed to procces new member`)));
@@ -49,7 +48,7 @@ export class GuildMemberAddHandlingService {
     private async sendWelcomePicToNewMember(newMember: Ds.GuildMember) {
         const {cmdPrefix} = this.config.cmdHandlingParams;
         const imgBuf = (await this.createWelcomeMemberCanvas(newMember)).toBuffer();
-        return this.dsClient.getMainTextChannel().send(new Ds.RichEmbed({
+        return this.app.getMainTextChannel().send(new Ds.RichEmbed({
             title: `Welcome to the server, **${newMember.displayName}**!`,
             description: 
                 `Send ${'`'}${cmdPrefix}help${'`'} in order to get available commands refference.`, 
@@ -108,9 +107,6 @@ export class GuildMemberAddHandlingService {
             canvas.height * 0.8 // if 1 text may overflow over the bottom if the image
         ); 
         return canvas;
-    }
-
-    
-    
+    }    
 
 }

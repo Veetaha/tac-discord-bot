@@ -3,8 +3,7 @@ import { Nullable } from 'ts-typedefs';
 import { Service } from 'typedi';
 
 import { NotInVoiceChannelError, BotPermissionsError } from '@modules/discord-cmd/errors/cmd.errors';
-import { DsClientService } from '@modules/ds-client.service';
-import { LogPerformance } from '@modules/utils/log-performance.decorator';
+import { AppFreezeGuard } from '@modules/config/app-freeze-guard.decorator';
 
 
 @Service()
@@ -13,7 +12,7 @@ export class VoiceMgrService {
     /** Returns currently established voice connection. */
     getConnection() { return this.connection; }
 
-    constructor(private readonly dsClient: DsClientService) {}
+    constructor(private readonly dsClient: Ds.Client) {}
 
     /**
      * Returns connection that was established with `voiceChannel`. Reuses previous
@@ -23,14 +22,14 @@ export class VoiceMgrService {
      * 
      * @param voiceChannel `Ds.VoiceChannel` to establish connection to.
      */
-    @LogPerformance
+    @AppFreezeGuard
     async connectToChannelOrFail(voiceChannel: Nullable<Ds.VoiceChannel>) {
         if (voiceChannel == null) {
             throw new NotInVoiceChannelError(
                 'You need to be in a voice channel before playing the music.'
             );
         }
-        const permissions = voiceChannel.permissionsFor(this.dsClient.client.user)!;
+        const permissions = voiceChannel.permissionsFor(this.dsClient.user)!;
         if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
             throw new BotPermissionsError(
                 'I need the permissions to join and speak in your voice channel.'

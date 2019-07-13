@@ -3,7 +3,6 @@ import humanizeDuration from 'humanize-duration';
 import { Nullable, Merge } from 'ts-typedefs';
 
 import { MaybeAsyncRoutine } from '@modules/interfaces';
-import { DebugService } from '@modules/debug.service';
 
 import { CmdParamsMetadata  } from './meta/cmd-params-metadata.class';
 import { UserRoleLimit      } from './user-role-limit.class';
@@ -32,7 +31,6 @@ export type TryHandleMsgCtx = Merge<CmdHandlerFnCtx, {
 }>;
 
 export class CmdHandlerWrapper implements CmdMetadata {
-    private static readonly debug = Container.get(DebugService);
 
     /** 
      * Contains timestamp when this command was last time invoked by user. 
@@ -85,7 +83,6 @@ export class CmdHandlerWrapper implements CmdMetadata {
      * Pre: `msg.content === (prefix + cmd + ' ' + params).trim()` 
      */
     async handleMsgOrFail(ctx: TryHandleMsgCtx) {
-        CmdHandlerWrapper.debug.assert(() => this.cmd.includes(ctx.cmd));
         this.ensureSenderObeysRoleLimitOrFail(ctx);  
         this.ensureCooldownIsNotActive(ctx);
         const params = this.transformValidateParamsOrFail(ctx);

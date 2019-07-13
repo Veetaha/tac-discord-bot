@@ -1,8 +1,10 @@
 import { Service } from "typedi";
 import Axios from 'axios';
-import { ConfigService } from "@modules/config.service";
-import { YtFindVideoResponse } from "./yt.interfaces";
+
+import { ConfigService } from "@modules/config/config.service";
 import { YtVidSearchError } from "@modules/handlers/audio/audio.errors";
+
+import { YtFindVideoResponse } from "./yt.interfaces";
 
 @Service()
 export class YtService {

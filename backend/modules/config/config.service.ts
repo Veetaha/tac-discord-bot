@@ -1,10 +1,9 @@
 import Ds from 'discord.js';
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
 
 import { EnvService } from "@modules/env.service";
-import { NoopIf     } from '@common/utils/noop-if.decorator';
 
-import { InitParams as CmdHandlingInitParams } from './discord-cmd/cmd-handling.service';
+import { InitParams as CmdHandlingInitParams } from '../discord-cmd/cmd-handling.service';
 
 @Service()
 export class ConfigService {
@@ -47,9 +46,13 @@ export class ConfigService {
     readonly discordBotToken  = this.env.readEnvOrFail('DISCORD_BOT_TOKEN');
     readonly version          = this.env.readEnvOrFail('BOT_VERSION');
     readonly mainGuild = {
-        mainChannelName:    this.env.readEnvOrFail('MAIN_GUILD_CHANNEL_NAME'),
         name:               this.env.readEnvOrFail('MAIN_GUILD_NAME'),
+        mainChannelName:    this.env.readEnvOrFail('MAIN_GUILD_CHANNEL_NAME'),
         initialMemberRoles: this.env.readEnvOrFail('MAIN_GUILD_INITIAL_ROLES').split(',')
+    } as const;
+    readonly logGuild = {
+        name:        this.env.readEnvOrFail('LOG_GUILD_NAME'),
+        channelName: this.env.readEnvOrFail('LOG_GUILD_CHANNEL_NAME')
     } as const;
     readonly errorRichEmbedDefaultOptions: Partial<Ds.RichEmbedOptions> = {
         color: 10948133,
@@ -57,5 +60,3 @@ export class ConfigService {
     };
 }
 
-/** Decorator that should be used on methods to disable in production mode */
-export const NoopInProduction = NoopIf(!Container.get(ConfigService).isDevelopmentMode);

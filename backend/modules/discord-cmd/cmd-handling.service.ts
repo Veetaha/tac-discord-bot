@@ -1,14 +1,14 @@
 import Ds from 'discord.js';
 import { Service } from "typedi";
 
-import { LoggingService } from "@modules/logging.service";
+import { LoggingService } from "@modules/logging/logging.service";
 import { ErrorService   } from "@modules/error.service";
 
 import { UserError       } from "./errors/user-error.class";
 import { MetadataStorage } from "./meta/metadata-storage.class";
 import { CmdParamsParser } from './cmd-params-parser.class';
 import { UnknownCmdError } from '@modules/handlers/stateless/stateless.errors';
-import { LogPerformance } from '@modules/utils/log-performance.decorator';
+import { AppFreezeGuard  } from '@modules/config/app-freeze-guard.decorator';
 
 
 export interface InitParams {
@@ -52,7 +52,7 @@ export class CmdHandlingService {
      * 
      * @param msg Discord message received from `Ds.Client`.
      */
-    @LogPerformance
+    @AppFreezeGuard
     async tryHandleCmd(msg: Ds.Message){
         return this.tryInvokeCmdHandlerOrFail(msg)
             .catch(async err => {

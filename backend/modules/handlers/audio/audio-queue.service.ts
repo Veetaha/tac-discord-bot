@@ -13,7 +13,7 @@ import {
     NoAudioIsStreamingError, AudioIsAlreadyPausedError, 
     AudioIsNotPausedError, AudioQueueOverflowError 
 } from './audio.errors';
-import { ConfigService } from '@modules/config.service';
+import { ConfigService } from '@modules/config/config.service';
 
 export const enum Events {
     /** Emitted when track was enqueued but not instantly played. */

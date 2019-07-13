@@ -1,19 +1,40 @@
+import Ds from 'discord.js';
 import '@app/polyfills';
 import 'moment-duration-format'; // moment plugin
 import Container from 'typedi';
 
-import { DsClientService } from '@modules/ds-client.service';
+import { ConfigService } from '@modules/config/config.service';
 
-// Import all command handling services in order 
-// to registrer them in dependency injection system
-import '@modules/handlers';
-import { LoggingService } from '@modules/logging.service';
-import { GuildMemberAddHandlingService } from '@modules/handlers/guild-member-add-handling.service';
+async function main() {
+    // set ds client instance before importing any other dependent services
+    Container.set(Ds.Client, new Ds.Client);
 
-const log = Container.get(LoggingService);
-const guildMemberAddHandling = Container.get(GuildMemberAddHandlingService);
+    // set `DsLoggingService` implementation of instead `LoggingService` in production
+    if (Container.get(ConfigService).isDevelopmentMode) {
+        const [{LoggingService}, {DsLoggingService}] = await Promise.all([
+            import('@modules/logging/logging.service'),
+            import('@modules/logging/ds-logging.service')
+        ]);
+        Container.set(LoggingService, Container.get(DsLoggingService));
+    }
 
-Container.get(DsClientService).init().run().then(
-    () => guildMemberAddHandling.init(),  
-    err => log.error(err, `bootstrapping error, discord bot failed to log in`)
-);                                                                            
+    const [{AppService}, {GuildMemberAddHandlingService}] = await Promise.all([
+        import('@modules/app.service'),
+        import('@modules/handlers/guild-member-add-handling.service'),
+
+        // Import all command handling services in order 
+        // to registrer them in dependency injection system
+        import('@modules/handlers')
+    ]);
+    await Container.get(AppService).init().run();
+    
+    // initialize event handlers
+    Container.get(GuildMemberAddHandlingService);
+}
+
+main().catch(err => {
+    console.log('Bootstrapping error');
+    console.error(err);
+});
+
+                                                                            

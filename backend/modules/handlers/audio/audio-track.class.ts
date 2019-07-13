@@ -5,7 +5,7 @@ import { Nullable } from 'ts-typedefs';
 import Container from 'typedi';
 
 import { YtService } from '@modules/yt/yt.service';
-import { LogPerformance } from '@modules/utils/log-performance.decorator';
+import { AppFreezeGuard } from '@modules/config/app-freeze-guard.decorator';
 
 
 import { YtVidOrder } from './audio.interfaces';
@@ -27,7 +27,7 @@ export class AudioTrack {
      * @param ytUrl    Youtube video url to get audio from.
      * @param customer Disord guild member that ordered this track.
      */
-    @LogPerformance
+    @AppFreezeGuard
     static async createFromYtVidOrderOrFail({msg, ytUrlOrQuery}: YtVidOrder) {
         if (Joi.string().uri().validate(ytUrlOrQuery).error != null) {
             ytUrlOrQuery = await AudioTrack.yt.findVideoUrlOrFail(ytUrlOrQuery);

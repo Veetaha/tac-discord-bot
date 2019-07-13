@@ -2,7 +2,7 @@ import Ds from 'discord.js';
 import * as IterTools from 'iter-tools';
 import { Service } from "typedi";
 
-import { ConfigService } from '@modules/config.service';
+import { ConfigService } from '@modules/config/config.service';
 import { StringService } from '@modules/utils/string.service';
 
 export type TextSendableChannel = Ds.TextChannel | Ds.DMChannel | Ds.GroupDMChannel;

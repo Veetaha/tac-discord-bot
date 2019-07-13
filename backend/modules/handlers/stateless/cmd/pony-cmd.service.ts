@@ -5,10 +5,14 @@ import { Service } from "typedi";
 import { DerpibooruService } from "@modules/derpibooru/derpibooru.service";
 import { CmdEndpoint } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
 import { CmdHandlerFnCtx } from "@modules/discord-cmd/cmd.interfaces";
+import { LoggingService } from '@modules/logging/logging.service';
 
 @Service()
 export class PonyCmdService {
-    constructor(private readonly derpibooruApi: DerpibooruService) {}
+    constructor(
+        private readonly derpibooruApi: DerpibooruService,
+        private readonly log:           LoggingService
+    ) {}
 
     private readonly  footer = { 
         text: 'Powered by derpibooru.org (dinky.js), cracked by Veetaha.' 
@@ -32,6 +36,7 @@ export class PonyCmdService {
         if (media == null) {
             return msg.channel.send(this.createNotFoundReply(tags));
         }
+        this.log.info(`Got media full representation: ${media.representations.full}`);
         const defaultEmbed = new Ds.RichEmbed({
             title:       `Random pony for **${msg.member.displayName}**`,
             description: `**Tags:** *${'```'}${media.tags}${'```'}*`,

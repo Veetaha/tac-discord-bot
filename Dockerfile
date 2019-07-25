@@ -3,6 +3,7 @@ RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:jonathonf/ffmpeg-4
 RUN apt install -y ffmpeg 
+RUN apt install -y graphicsmagick imagemagick 
 
 WORKDIR /usr/app
 

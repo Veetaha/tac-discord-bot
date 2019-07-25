@@ -18,8 +18,8 @@ export class BitrateCmdService {
     @CmdEndpoint({
         cmd: ['bitrate', 'br'],
         description: 
-            'Sets or displays current audio bitrate. New bitrate setting ' +
-            'will be displayed with the next track. ' +
+            'Sets or displays current audio bitrate. Change to the bitrate ' +
+            'will be applied immediately.' +
             'The bigger bitrate the higher audio quality is, however users '+
             'with bad internet connection may experience packet loss.',
         params: {

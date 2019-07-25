@@ -80,3 +80,5 @@ dist/
 
 # tsc
 build/
+
+**/tmp/**

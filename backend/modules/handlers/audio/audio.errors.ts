@@ -29,3 +29,9 @@ export class YtVidSearchError extends UserError {
         super({title: 'Youtube video search error.', description});
     }
 }
+
+export class AudioQueueIsBusyError extends UserError {
+    constructor(description: string) {
+        super({title: 'Audio queue is busy error.', description});
+    }
+}

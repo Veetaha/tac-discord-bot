@@ -2,7 +2,7 @@ import Container from 'typedi';
 import humanizeDuration from 'humanize-duration';
 import { Nullable, Merge } from 'ts-typedefs';
 
-import { MaybeAsyncRoutine } from '@modules/interfaces';
+import { MaybeAsyncRoutine } from '@common/interfaces';
 
 import { CmdParamsMetadata  } from './meta/cmd-params-metadata.class';
 import { UserRoleLimit      } from './user-role-limit.class';

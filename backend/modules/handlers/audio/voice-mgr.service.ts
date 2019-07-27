@@ -12,7 +12,7 @@ export class VoiceMgrService {
     /** Returns currently established voice connection. */
     getConnection() { return this.connection; }
 
-    constructor(private readonly dsClient: Ds.Client) {}
+    constructor() {}
 
     /**
      * Returns connection that was established with `voiceChannel`. Reuses previous
@@ -29,10 +29,9 @@ export class VoiceMgrService {
                 'You need to be in a voice channel before playing the music.'
             );
         }
-        const permissions = voiceChannel.permissionsFor(this.dsClient.user)!;
-        if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+        if (!voiceChannel.joinable || !voiceChannel.speakable) {
             throw new BotPermissionsError(
-                'I need the permissions to join and speak in your voice channel.'
+                `I don't have permissions to join and speak in your voice channel or channel is full`
             );
         }
         await this.connectToChannelOrFailImpl(voiceChannel);

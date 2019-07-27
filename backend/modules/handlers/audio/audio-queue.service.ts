@@ -2,18 +2,20 @@ import { Service } from 'typedi';
 import { Queue } from 'typescript-collections';
 import { EventEmitter } from 'events';
 
-import { MaybeAsyncRoutine } from '@modules/interfaces';
-import { DebugService     } from '@modules/debug.service';
-import { ErrorService     } from '@modules/error.service';
+import { MaybeAsyncRoutine, WrapIntoPromise } from '@common/interfaces';
+import { AsyncMutex        } from '@common/utils/async-mutex';
+import { ConfigService     } from '@modules/config/config.service';
+import { DebugService      } from '@modules/debug.service';
+import { ErrorService      } from '@modules/error.service';
 
 import { YtVidOrder } from './audio.interfaces';
 import { AudioTrack } from './audio-track.class';
 import { AudioPlayerService, TrackEndReason, Events as APEvents } from './audio-player.service';
 import { 
     NoAudioIsStreamingError, AudioIsAlreadyPausedError, 
-    AudioIsNotPausedError, AudioQueueOverflowError 
+    AudioIsNotPausedError, AudioQueueOverflowError, AudioQueueIsBusyError 
 } from './audio.errors';
-import { ConfigService } from '@modules/config/config.service';
+import { Func } from 'ts-typedefs';
 
 export const enum Events {
     /** Emitted when track was enqueued but not instantly played. */
@@ -44,14 +46,30 @@ export interface AudioQueueService {
 @Service()
 export class AudioQueueService extends EventEmitter {
     private readonly queue = new Queue<AudioTrack>();
+    private readonly mutex = new AsyncMutex;
 
     constructor(
         private readonly config:      ConfigService,
         private readonly debug:       DebugService,
         private readonly errs:        ErrorService,
         private readonly audioPlayer: AudioPlayerService
-    ) { super(); }
+    ) { super(); 
+        this.streamOrEnqueueYtVidOrderOrFail = this.wrapCriticalSection(this.streamOrEnqueueYtVidOrderOrFail);
+        this.skipCurrentTrackOrFail = this.wrapCriticalSection(this.skipCurrentTrackOrFail);
+    }
 
+    private wrapCriticalSection<TParams extends any[], TRetval> (method: Func<TParams, TRetval>) {
+        return function (this: AudioQueueService, ...params: TParams) {
+            if (this.mutex.isLocked()) {
+                throw new AudioQueueIsBusyError(
+                    `Sorry, but some other routine is currently holding async mutex.\n` +
+                    `Please, try again later and if mutex won't be released withing 30 seconds ` +
+                    `file a bug to @Veetaha`
+                );
+            }
+            return this.mutex.runExclusive(() => method.apply(this, params)) as WrapIntoPromise<TRetval>;
+        };
+    }
     getCurrentTrack() { 
         this.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
         return this.queue.peek(); 

@@ -6,7 +6,7 @@ import { EventEmitter } from 'events';
 
 import { LoggingService } from '@modules/logging/logging.service';
 import { ConfigService } from '@modules/config/config.service';
-import { MaybeAsyncRoutine } from '@modules/interfaces';
+import { MaybeAsyncRoutine } from '@common/interfaces';
 
 import { VoiceMgrService } from './voice-mgr.service';
 import { AudioTrack } from './audio-track.class';

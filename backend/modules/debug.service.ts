@@ -1,9 +1,10 @@
 import * as Joi from 'typesafe-joi';
+import { Routine, AsyncRoutine } from 'ts-typedefs';
 import { Service } from 'typedi';
 
 import { LoggingService } from './logging/logging.service';
 import { NoopInProduction } from './config/noop-in-production.decorator';
-import { Routine, AsyncRoutine } from './interfaces';
+
 
 @Service()
 export class DebugService {

@@ -29,12 +29,16 @@ export class GuildMemberAddHandlingService {
             roleName => mainGuild.roles.find(role => role.name === roleName)
         );
         dsClient.on('guildMemberAdd', newMember => Promise.all([
-            this.setNewMemberInitialRoles(newMember),
-            this.sendWelcomePicToNewMember(newMember)
-        ]).catch(err => this.log.error(err, `Failed to procces new member`)));
+            this.setNewMemberInitialRoles(newMember).catch(this.log.createErrback(
+                `Failed to set new member initial roles`
+            )),
+            this.sendWelcomePicToNewMember(newMember).catch(this.log.createErrback(
+                `Failed to send welcome picture to new member`
+            ))
+        ]));
 
         this.debug.assert(() => mainGuild.me.hasPermission('MANAGE_ROLES'));
-        this.debug.assert(() => this.initialMemberRoles.findIndex(r => r == null) < 0);
+        this.debug.assert(() => !this.initialMemberRoles.includes(null!));
     }
 
     private async setNewMemberInitialRoles(newMember: Ds.GuildMember) {

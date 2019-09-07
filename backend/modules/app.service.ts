@@ -82,7 +82,7 @@ export class AppService {
         void this.dsClient.destroy()
             .then(
                 () => this.log.info('Bot was successfully shutdown'),
-                err => this.log.error(`Shutdown error: ${err}`)
+                this.log.createErrback(`Shutdown error`)
             )
             .finally(() => process.exit(0));
     });

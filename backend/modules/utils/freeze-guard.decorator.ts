@@ -15,12 +15,12 @@ export function FreezeGuard(thresh: number): MethodDecorator<any[], Promise<any>
         const method = descr.value!;
         let i = 0;
         descr.value = function(...params) {
-            const log   = Container.get(LoggingService);
-            const debug = Container.get(DebugService);
+            const log           = Container.get(LoggingService);
+            const debug         = Container.get(DebugService);
             const callSignature = `${methodName}() #${++i}`;
-            const displayTime = log.time(callSignature);
-            const retPromise = method.apply(this, params);
-            const nodeTimer =  setTimeout(
+            const displayTime   = log.time(callSignature);
+            const retPromise    = method.apply(this, params);
+            const nodeTimer     = setTimeout(
                 () => debug.shutdown(`${callSignature} failed to resolve in ${thresh} ms.`), 
                 thresh
             );

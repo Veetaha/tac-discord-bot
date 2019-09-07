@@ -99,4 +99,12 @@ export class LoggingService {
     private createLogMsg(payload: unknown, description: string) {
         return `${description}${NodeUtil.inspect(payload)}`;
     }
+
+    /**
+     * Shorthand for creation error callbacks like `err => this.log.error(err, description)`
+     * @param description Description to be logged alongside given error value.
+     */
+    createErrback(description: string) {
+        return (err: unknown) => this.error(err, description);
+    }
 }

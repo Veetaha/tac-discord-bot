@@ -23,9 +23,9 @@ export class StreamService {
                 totalLength += chunk.length;
             });
             stream.on('end', () => resolve(Buffer.concat(buffers, totalLength)));
-            stream.on('error', err => reject(
-                new StreamToBufferError('readable stream emitted error event', err)
-            ));
+            stream.on('error', err => reject(new StreamToBufferError(
+                'readable stream emitted error event', err
+            )));
         });
     }
 

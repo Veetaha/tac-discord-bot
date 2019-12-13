@@ -74,7 +74,7 @@
         "multi-integer-range": "^4.0.7",
         "nested-error-stacks": "^2.1.0",
         "node-opus": "^0.3.2",
-        "npm": "^6.11.3",
+        "npm": "^6.13.4",
         "reflect-metadata": "latest",
         "rxjs": "^6.5.3",
         "save-pixels": "^2.3.4",

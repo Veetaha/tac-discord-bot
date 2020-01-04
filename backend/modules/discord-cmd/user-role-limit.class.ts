@@ -1,5 +1,5 @@
-import Ds from 'discord.js';
-import Container from 'typedi';
+import ds from 'discord.js';
+import { Container } from 'typedi';
 import { Nullable } from 'ts-typedefs';
 
 import { IteratorService } from '@modules/utils/iterator.service';
@@ -28,8 +28,8 @@ export class UserRoleLimit {
      * 
      * @param suspectRoles Discord user roles to check.
      */
-    matchToRoleLimit(suspectRoles: Ds.GuildMember['roles']) {
-        const determinativeRole: Nullable<Ds.Role> = suspectRoles
+    matchToRoleLimit(suspectRoles: ds.GuildMember['roles']) {
+        const determinativeRole: Nullable<ds.Role> = suspectRoles
             .find(role => this.roles.has(role.name));
             
         return {
@@ -43,7 +43,7 @@ export class UserRoleLimit {
      * 
      * @param separator Separator string that will be inserted between role names.
      */
-    stringifyRoles(separator = ', ') {
+    stringifyRoles(separator = ', '): string {
         return UserRoleLimit.iter.join(this.roles.values(), separator);
     }
 }

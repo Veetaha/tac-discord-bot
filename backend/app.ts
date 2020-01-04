@@ -1,13 +1,13 @@
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import '@app/polyfills';
 import 'moment-duration-format'; // moment plugin
-import Container from 'typedi';
+import { Container } from 'typedi';
 
 import { ConfigService } from '@modules/config/config.service';
 
 async function main() {
     // set ds client instance before importing any other dependent services
-    Container.set(Ds.Client, new Ds.Client);
+    Container.set(ds.Client, new ds.Client);
 
     // set `DsLoggingService` implementation of instead `LoggingService` in production
     if (Container.get(ConfigService).isDevelopmentMode) {

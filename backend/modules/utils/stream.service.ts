@@ -14,8 +14,8 @@ export class StreamService {
      * 
      * @param stream Stream to collect data into a buffer from.
      */
-    streamToBufferOrFail(stream: Stream) {
-        return new Promise<Buffer>((resolve, reject) => {
+    streamToBufferOrFail(stream: Stream): Promise<Buffer> {
+        return new Promise((resolve, reject) => {
             const buffers: Buffer[] = [];
             let totalLength = 0;
             stream.on('data', (chunk: Buffer) => {

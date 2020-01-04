@@ -1,4 +1,4 @@
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import once from 'lodash/once';
 import { Service } from "typedi";
 
@@ -11,8 +11,8 @@ import { DerpibooruService  } from './derpibooru/derpibooru.service';
 
 @Service()
 export class AppService {
-    private mainGuild!:       Ds.Guild;
-    private mainTextChannel!: Ds.TextChannel;
+    private mainGuild!:       ds.Guild;
+    private mainTextChannel!: ds.TextChannel;
 
     constructor(
         private readonly log:           LoggingService,
@@ -21,7 +21,7 @@ export class AppService {
         private readonly dsUtils:       DsUtilsService,
         private readonly cmdHandling:   CmdHandlingService,
         private readonly derpibooruApi: DerpibooruService,
-        private readonly dsClient:      Ds.Client
+        private readonly dsClient:      ds.Client
     ) {}
 
     getMainGuild() {
@@ -60,13 +60,13 @@ export class AppService {
             this.mainGuild, mainGuild.mainChannelName
         );
     }
-    private async setDefaultBotActivityOrFail() {
-        await this.dsClient.user.setPresence(this.config.botUser.presence);        
+    private async setDefaultBotActivityOrFail(): Promise<void> {
+        await this.dsClient.user.setPresence(this.config.botUser.presence);
     }
-    private async tryUpdateBotAvatarOrFail() {
+    private async tryUpdateBotAvatarOrFail(): Promise<void> {
         const {representations:{full}} = await this.derpibooruApi
             .fetchRandomPonyImageOrFail(this.config.botUser.avatar.tags);
-        return this.dsClient.user.setAvatar(`https:${full}`);
+        await this.dsClient.user.setAvatar(`https:${full}`);
     }
 
     async run() {

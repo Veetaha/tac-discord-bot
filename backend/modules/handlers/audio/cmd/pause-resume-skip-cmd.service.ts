@@ -1,4 +1,4 @@
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import { Service } from "typedi";
 
 import { CmdEndpoint } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
@@ -16,7 +16,7 @@ export class PauseResumeSkipCmdService {
     })
     async onPauseMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.pauseCurrentTrackOrFail();
-        await msg.channel.send(new Ds.RichEmbed({
+        await msg.channel.send(new ds.RichEmbed({
             description: `Track ${this.audioQueue.getCurrentTrack()!.toMd()} was set on pause.`
         }));
     }
@@ -27,7 +27,7 @@ export class PauseResumeSkipCmdService {
     })
     async onResumeMusic({msg}: CmdHandlerFnCtx) {
         this.audioQueue.resumeCurrentTrackOrFail();
-        await msg.channel.send(new Ds.RichEmbed({
+        await msg.channel.send(new ds.RichEmbed({
             description: `Track ${this.audioQueue.getCurrentTrack()!.toMd()} was resumed.`
         }));
     }
@@ -37,6 +37,6 @@ export class PauseResumeSkipCmdService {
         description: 'Skips currently playing audio track.'
     })
     async onSkipMusic() {
-        await this.audioQueue.skipCurrentTrackOrFail();
+        this.audioQueue.skipCurrentTrackOrFail();
     }
 }

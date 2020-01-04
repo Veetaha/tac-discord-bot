@@ -11,15 +11,15 @@ import { ErrorService      } from '@modules/error.service';
 import { YtVidOrder } from './audio.interfaces';
 import { AudioTrack } from './audio-track.class';
 import { AudioPlayerService, TrackEndReason, Events as APEvents } from './audio-player.service';
-import { 
-    NoAudioIsStreamingError, AudioIsAlreadyPausedError, 
-    AudioIsNotPausedError, AudioQueueOverflowError, AudioQueueIsBusyError 
+import {
+    NoAudioIsStreamingError, AudioIsAlreadyPausedError,
+    AudioIsNotPausedError, AudioQueueOverflowError, AudioQueueIsBusyError
 } from './audio.errors';
 import { Func } from 'ts-typedefs';
 
 export const enum Events {
     /** Emitted when track was enqueued but not instantly played. */
-    TrackScheduled = 'trackScheduled', 
+    TrackScheduled = 'trackScheduled',
     /** Emitted when track streaming has finished with no interrupts. */
     TrackEnd = 'trackEnd',
     /** Emitted when track was manually finshed. */
@@ -53,7 +53,7 @@ export class AudioQueueService extends EventEmitter {
         private readonly debug:       DebugService,
         private readonly errs:        ErrorService,
         private readonly audioPlayer: AudioPlayerService
-    ) { super(); 
+    ) { super();
         this.streamOrEnqueueYtVidOrderOrFail = this.wrapCriticalSection(this.streamOrEnqueueYtVidOrderOrFail);
         this.skipCurrentTrackOrFail = this.wrapCriticalSection(this.skipCurrentTrackOrFail);
     }
@@ -70,22 +70,22 @@ export class AudioQueueService extends EventEmitter {
             return this.mutex.runExclusive(() => method.apply(this, params)) as WrapIntoPromise<TRetval>;
         };
     }
-    getCurrentTrack() { 
+    getCurrentTrack(): AudioTrack | undefined {
         this.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
-        return this.queue.peek(); 
+        return this.queue.peek();
     }
-    isStreaming() { 
+    isStreaming(): boolean {
         this.debug.assert(() => !this.audioPlayer.isStreaming() || this.queue.peek() != null);
-        return this.audioPlayer.isStreaming(); 
+        return this.audioPlayer.isStreaming();
     }
-    isEmpty() { return this.queue.isEmpty(); }   
-    
-    async streamOrEnqueueYtVidOrderOrFail(order: YtVidOrder) {
+    isEmpty(): boolean { return this.queue.isEmpty(); }
+
+    async streamOrEnqueueYtVidOrderOrFail(order: YtVidOrder): Promise<void> {
         if (!this.queue.isEmpty()) {
             return this.enqueueYtVidOrderOrFail(order);
         }
         this.queue.enqueue(await AudioTrack.createFromYtVidOrderOrFail(order));
-        return this.tryStreamCurrentTrack();
+        await this.tryStreamCurrentTrack();
     }
     private async enqueueYtVidOrderOrFail(order: YtVidOrder) {
         if (this.queue.size() >= this.config.music.maxQueueSize) {
@@ -99,9 +99,9 @@ export class AudioQueueService extends EventEmitter {
         this.emitTrackScheduled({ track, index: this.queue.size() - 1 });
     }
 
-    private async tryStreamCurrentTrack(): Promise<unknown> {
+    private async tryStreamCurrentTrack(): Promise<void> {
         const {msg} = this.getCurrentTrack()!;
-        return this.streamCurrentTrackOrFail().catch(err => Promise.all([
+        await this.streamCurrentTrackOrFail().catch(err => Promise.all([
             this.errs.tryReplyWithError(msg, err),
             this.tryStreamNextTrack()
         ]));
@@ -114,32 +114,32 @@ export class AudioQueueService extends EventEmitter {
         this.audioPlayer
             .once(APEvents.TrackStart, () => void this.emit(Events.TrackStart, track))
             .once(APEvents.TrackEnd, reason => {
-                this.emit(reason === TrackEndReason.TrackInterrupt 
-                    ? Events.TrackInterrupt 
-                    : Events.TrackEnd, 
+                this.emit(reason === TrackEndReason.TrackInterrupt
+                    ? Events.TrackInterrupt
+                    : Events.TrackEnd,
                     track
                 );
                 void this.tryStreamNextTrack();
             });
     }
-    private async tryStreamNextTrack() {
+    private async tryStreamNextTrack(): Promise<void> {
         this.debug.assertFalsy(() => this.queue.isEmpty());
         this.queue.dequeue();
         if (!this.queue.isEmpty()) {
-            return this.tryStreamCurrentTrack();
+            await this.tryStreamCurrentTrack();
         }
     }
 
-    forEachTrackInQueue(...params: Parameters<Queue<AudioTrack>['forEach']> ) {
-        return this.queue.forEach(...params);
+    forEachTrackInQueue(...params: Parameters<Queue<AudioTrack>['forEach']>): void {
+        this.queue.forEach(...params);
     }
 
-    async skipCurrentTrackOrFail() {
+    skipCurrentTrackOrFail(): void {
         this.ensurePlayerIsStreamingOrFail();
         this.audioPlayer.endStreaming();
     }
 
-    pauseCurrentTrackOrFail() {
+    pauseCurrentTrackOrFail(): void {
         this.ensurePlayerIsStreamingOrFail();
         if (this.audioPlayer.isPaused()) {
             const trackMd = this.getCurrentTrack()!.toMd();
@@ -147,7 +147,7 @@ export class AudioQueueService extends EventEmitter {
         }
         this.audioPlayer.pause();
     }
-    
+
 
     resumeCurrentTrackOrFail() {
         this.ensurePlayerIsStreamingOrFail();

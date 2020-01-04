@@ -1,5 +1,5 @@
 import { MethodDecorator } from "ts-typedefs";
-import Container from "typedi";
+import { Container } from "typedi";
 
 import { LoggingService } from "@modules/logging/logging.service";
 import { DebugService   } from "@modules/debug.service";

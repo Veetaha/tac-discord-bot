@@ -1,4 +1,4 @@
-import Container from 'typedi';
+import { Container } from 'typedi';
 import humanizeDuration from 'humanize-duration';
 import { Nullable, Merge } from 'ts-typedefs';
 

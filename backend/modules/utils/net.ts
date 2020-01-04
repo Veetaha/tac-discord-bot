@@ -5,7 +5,7 @@ import { Readable } from 'stream';
 
 @Service()
 export class NetService {
-    downloadFileOrFail(url: string, outfilePath: string) {
+    downloadFileOrFail(url: string, outfilePath: string): Promise<void> {
         return Axios
             .get<Readable>(url, { responseType: 'stream' })
             .then(({data}) => new Promise<void>((resolve, reject) => data

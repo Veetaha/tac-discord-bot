@@ -12,12 +12,12 @@ export class CmdParamsMetadata {
 
     constructor({definition, minRequiredAmount, maxAmount}: CmdParamsMetadataApi) {
         const cls = CmdParamsMetadata;
-        const hasRastParams = cls.isArraySchema(last(definition)!.schema);
+        const hasRestParams = cls.isArraySchema(last(definition)!.schema);
         this.minRequiredAmount = defaultTo(
-            minRequiredAmount, definition.length - +hasRastParams
+            minRequiredAmount, definition.length - +hasRestParams
         );
         this.maxAmount = defaultTo(
-            maxAmount, hasRastParams ? 65535 : definition.length
+            maxAmount, hasRestParams ? 65535 : definition.length
         );
         this.definition = definition;
     }
@@ -26,7 +26,7 @@ export class CmdParamsMetadata {
      * Pre: `paramIndex < .definition.length`.
      * Returns template usage representation of a single param under `paramIndex`.
      */
-    getParamUsageTemplate(paramIndex: number) {
+    getParamUsageTemplate(paramIndex: number): string {
         const cls         = CmdParamsMetadata;
         const param       = this.definition[paramIndex];
         const paramPrefix = cls.isArraySchema(param.schema)     ? '...' : '';
@@ -43,7 +43,7 @@ export class CmdParamsMetadata {
      * 
      * @returns Array of transformed to their type and validated parameters.
      */
-    transformValidateOrFail(params: readonly string[]) {
+    transformValidateOrFail(params: readonly string[]): CmdScalarParam[] {
         if (params.length > this.maxAmount) {
             throw new Error(
                 `Too many parameters (maximum ${'`'}${this.maxAmount}${'`'} allowed)`
@@ -56,7 +56,7 @@ export class CmdParamsMetadata {
         }
         return this.transformValidateOrFailImpl(params);
     }
-    private transformValidateOrFailImpl(params: readonly string[]) {
+    private transformValidateOrFailImpl(params: readonly string[]): CmdScalarParam[] {
         const cls = CmdParamsMetadata;
         const resultParams = new Array<CmdScalarParam>();
         for (let i = 0; i < params.length; ++i) {
@@ -93,7 +93,7 @@ export class CmdParamsMetadata {
         return value;
     }
 
-    private static isArraySchema(schema: Nullable<CmdParamSchema>) {
+    private static isArraySchema(schema: Nullable<CmdParamSchema>): boolean {
         return schema != null && schema.describe().type === 'array';
     }
 }

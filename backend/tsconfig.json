@@ -11,7 +11,7 @@
             "@app/*":      [ "./*"         ],
             
         },
-        "target":           "esnext",  
+        "target":           "es2019",
         "lib":              ["esnext"],
         "module":           "commonjs",
         "moduleResolution": "node",

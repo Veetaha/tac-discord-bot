@@ -1,4 +1,4 @@
-import Container from 'typedi';
+import { Container } from 'typedi';
 import { MethodDecorator, Class } from 'ts-typedefs';
 
 import { MetadataStorage } from './metadata-storage.class';

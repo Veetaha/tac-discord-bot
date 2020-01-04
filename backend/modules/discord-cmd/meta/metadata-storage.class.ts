@@ -1,4 +1,4 @@
-import Container, { Service } from "typedi";
+import { Container, Service } from "typedi";
 import { Class } from "ts-typedefs";
 
 import { CmdHandlerWrapper, CmdHandlerFn } from "../cmd-handler-wrapper.class";

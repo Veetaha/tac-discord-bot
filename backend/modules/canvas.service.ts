@@ -34,7 +34,7 @@ export class CanvasService {
      *                 `text` should hit or approach (with some accuracy error), 
      *                 but never overflow.
      */
-    getFontSizeToFit(text: string, fontFace: string, maxWidth: number) {
+    getFontSizeToFit(text: string, fontFace: string, maxWidth: number): number {
         const ctx = Canvas.createCanvas(1, 1).getContext('2d');
         const sampleSize = 100; // more may cause overflow, but may provide better accuracy
         ctx.font = `${sampleSize}px ${fontFace}`;
@@ -42,7 +42,7 @@ export class CanvasService {
         return Math.floor(sampleSize * (maxWidth / sampleWidth));
     }
 
-    drawImgInCircle({ctx, circle, img}: DrawImgInCircleOpts) {
+    drawImgInCircle({ctx, circle, img}: DrawImgInCircleOpts): void {
         ctx.save();
         ctx.beginPath();
             ctx.arc(
@@ -56,11 +56,11 @@ export class CanvasService {
         ctx.closePath();
         ctx.clip();
 
-        ctx.drawImage(img, circle.x, circle.y, 2 * circle.radius, 2 * circle.radius); 
+        ctx.drawImage(img, circle.x, circle.y, 2 * circle.radius, 2 * circle.radius);
         ctx.restore();
     }
 
-    drawTextMaxFont({ctx, fontFace, text, width, x, y}: DrawTextMaxFontOpts) {
+    drawTextMaxFont({ctx, fontFace, text, width, x, y}: DrawTextMaxFontOpts): void {
         const fontSize = this.getFontSizeToFit(text, fontFace, width);
         ctx.font = `${fontSize}px ${fontFace}`;
         ctx.fillText(text, x, y); 

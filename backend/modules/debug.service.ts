@@ -13,7 +13,7 @@ export class DebugService {
 
     /**
      * Shutdowns the application if given routine throws an error (or rejects the Promise).
-     * 
+     *
      * @param routine Target routine to run.
      */
     shutdownIfThrows = <TFn extends Routine | AsyncRoutine>(routine: TFn): ReturnType<TFn> => {
@@ -23,14 +23,11 @@ export class DebugService {
         } catch (err) {
             this.shutdown(err);
         }
-        // this line is unreachable, but tsc complains about not returning 
-        // any value here
-        return void 0 as any;
     }
 
     /**
      * Aborts current program execution workflow after invoking `error(payload, description)`.
-     * 
+     *
      * @param payload       `Error` or vanilla object, which state needs to be logged.
      * @param description   Additional info message to be logged before `payload`.
      */
@@ -41,7 +38,7 @@ export class DebugService {
 
     /**
      * Checks that `Boolean(truthy) === true`, otherwise shutdowns and logs `truthy`.
-     * 
+     *
      * @param getSuspect Function that returns suspect to be checked for truthiness.
      */
     @NoopInProduction
@@ -54,7 +51,7 @@ export class DebugService {
 
     /**
      * Checks that `Boolean(truthy) === false`, otherwise shutdowns and logs `falsy`.
-     * 
+     *
      * @param getSuspect Function that returns suspect to be checked for truthiness.
      */
     @NoopInProduction
@@ -68,9 +65,9 @@ export class DebugService {
     /**
      * Asserts that `Joi.validate(suspect, schema).error == null`, otherwise shutdowns
      * and logs returned `Joi.ValidateError` object.
-     * 
+     *
      * @param getParams Function that returns `[suspect, schema]`
-     * 
+     *
      * @param suspect   Value of to be checked for type conformance.
      * @param schema `Joi.Schema` that `suspect` will be checked to match to.
      */

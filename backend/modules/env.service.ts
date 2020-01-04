@@ -1,5 +1,5 @@
-import Joi from 'typesafe-joi';
-import Dotenv from 'dotenv';
+import joi from 'typesafe-joi';
+import dotenv from 'dotenv';
 import { Service } from 'typedi';
 
 @Service() 
@@ -10,8 +10,8 @@ export class EnvService {
      * Uses `.env` file path by default.
      * @param path Path
      */
-    loadDotenv(path?: string) {
-        Dotenv.config(path != null ? {path}: void 0);
+    loadDotenv(path?: string): void {
+        dotenv.config(path != null ? {path}: void 0);
     }
 
     
@@ -21,7 +21,7 @@ export class EnvService {
      * 
      * @throws Error if `process.env[varId] == null`.
      */
-    readEnvOrFail(varId: string) {
+    readEnvOrFail(varId: string): string {
         const envValue = process.env[varId];
         if (envValue == null) {
             throw new Error(`failed to read '${varId}' environment variable`);
@@ -37,10 +37,10 @@ export class EnvService {
      * @throws Error if `process.env[varId] == null` or failed to parse valid port number.
      * 
      */
-    readPortFromEnvOrFail(varId: string) {
-        return Joi.attempt(
+    readPortFromEnvOrFail(varId: string): number {
+        return joi.attempt(
             parseInt(this.readEnvOrFail(varId), 10),
-            Joi.number().integer().min(0).max(65535).required(),
+            joi.number().integer().min(0).max(65535).required(),
         );
     }
 }

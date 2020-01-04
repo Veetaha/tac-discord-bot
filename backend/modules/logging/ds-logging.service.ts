@@ -1,4 +1,4 @@
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import { Service } from "typedi";
 import { Nullable } from 'ts-typedefs';
 
@@ -12,29 +12,29 @@ import { ConfigService } from '@modules/config/config.service';
  */
 @Service()
 export class DsLoggingService extends LoggingService {
-    
-    logChannel: Nullable<Ds.TextChannel>;
+
+    logChannel: Nullable<ds.TextChannel>;
 
     constructor(
         private readonly dsUtils: DsUtilsService,
-        dsClient:   Ds.Client,
+        dsClient:   ds.Client,
         {logGuild}: ConfigService
     ) {
         super();
         dsClient.once('ready', () => {
             const guild     = dsClient.guilds.find(({name}) => name === logGuild.name);
-            this.logChannel = dsUtils.getGuildWritableTextChannelOrFail(guild, logGuild.channelName); 
+            this.logChannel = dsUtils.getGuildWritableTextChannelOrFail(guild, logGuild.channelName);
         });
     }
 
-    writeLog(logType: LogType, msg: string) {
+    writeLog(logType: LogType, msg: string): void {
         if (!this.logChannel) {
             super.writeLog(logType, msg);
             return;
-        } 
+        }
         this.dsUtils
             .sendMsgInChunksToFit(
-                this.logChannel, 
+                this.logChannel,
                 `${'```'}${this.createMsgPrefix(logType)}${msg}${'```'}`
             )
             .catch(err => {

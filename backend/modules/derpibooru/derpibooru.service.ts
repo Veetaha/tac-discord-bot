@@ -33,7 +33,7 @@ export class DerpibooruService {
      */
     async fetchRandomPonyImageOrFail(tags: readonly string[]): Promise<DerpibooruImg> {
         const image = await this.tryFetchRandomPonyMedia(['-original_format:webm', ...tags]);
-        if (image == null)  {
+        if (image == null) {
             throw new Error(`Failed to fetch pony image with tags "${tags.join(', ')}" (not found)`);
         }
         if (!image.mimeType.startsWith('image')) {

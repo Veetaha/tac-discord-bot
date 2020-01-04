@@ -1,5 +1,5 @@
-import Ds from 'discord.js';
-import Moment from 'moment';
+import ds from 'discord.js';
+import moment from 'moment';
 import { LoggingService } from '@modules/logging/logging.service';
 
 import { Service } from "typedi";
@@ -10,42 +10,42 @@ import { AudioQueueService, Events as AQEvents } from "./audio-queue.service";
 @Service()
 export class MusicMgrService {
 
-    private sendEmbed(track: AudioTrack, embedOpts: Ds.RichEmbedOptions) {
-        return track.msg.channel.send(new Ds.RichEmbed(embedOpts)).catch(this.log.error);
+    private sendEmbed(track: AudioTrack, embedOpts: ds.RichEmbedOptions) {
+        return track.msg.channel.send(new ds.RichEmbed(embedOpts)).catch(this.log.error);
     }
 
     constructor(
-        private readonly audioQueue:  AudioQueueService, 
+        private readonly audioQueue:  AudioQueueService,
         private readonly audioPlayer: AudioPlayerService,
         private readonly log:         LoggingService
     ) {
         audioQueue
             .on(AQEvents.TrackScheduled, ({track, index}) => this.sendEmbed(track, {
-                description: 
+                description:
                     `Track ${track.toMd()} was scheduled to be ` +
                     `${'`'}#${index}${'`'} in the queue.`,
                 thumbnail: { url: track.getThumbnailUrl() },
                 footer: this.createScheduledTrackFooter(track)
             }))
 
-            .on(AQEvents.TrackStart, track => this.sendEmbed(track, { 
-                description: 
+            .on(AQEvents.TrackStart, track => this.sendEmbed(track, {
+                description:
                     `Now playing ${track.toMd()} \n(original bitrate ` +
-                    `${'`'}${track.getOriginalBitrateOrFail()} kbps${'`'}, ` +  
+                    `${'`'}${track.getOriginalBitrateOrFail()} kbps${'`'}, ` +
                     `current: ${'`'}${audioPlayer.getBitrate()} kbps${'`'})`,
                 thumbnail: { url: track.getThumbnailUrl() },
                 footer: this.createActiveTrackFooter()
             }))
 
-            .on(AQEvents.TrackEnd, track => this.sendEmbed(track, { 
+            .on(AQEvents.TrackEnd, track => this.sendEmbed(track, {
                 description: `Track ${track.toMd()} has finished.`
             }))
 
             .on(AQEvents.TrackInterrupt, track => this.sendEmbed(track, {
                 description: `Track ${track.toMd()} was skipped.`
             }))
-            
-            .on(AQEvents.ConnectedToVoiceChannel, track => this.sendEmbed(track, { 
+
+            .on(AQEvents.ConnectedToVoiceChannel, track => this.sendEmbed(track, {
                 description: `Connected to voice channel **"${
                     track.msg.member.voiceChannel.name}"**.`
             }));
@@ -70,7 +70,7 @@ export class MusicMgrService {
 
     /**
      * Creates discord embed footer part for the given track.
-     * @param track 
+     * @param track
      */
     createScheduledTrackFooter(track: AudioTrack) {
         const { member } = track.msg;
@@ -83,7 +83,7 @@ export class MusicMgrService {
 
     /** Returns duration in a colon separated string format. */
     formatDuration(duration: number) {
-        return Moment.duration(duration).format(`d[d] h:mm:ss`, {
+        return moment.duration(duration).format(`d[d] h:mm:ss`, {
             trim: 'large',
             stopTrim: 'm'
         });

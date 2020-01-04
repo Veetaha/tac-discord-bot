@@ -1,4 +1,4 @@
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import { Service } from "typedi";
 
 import { LoggingService } from "@modules/logging/logging.service";
@@ -53,7 +53,7 @@ export class CmdHandlingService {
      * @param msg Discord message received from `Ds.Client`.
      */
     @AppFreezeGuard
-    async tryHandleCmd(msg: Ds.Message){
+    async tryHandleCmd(msg: ds.Message){
         return this.tryInvokeCmdHandlerOrFail(msg)
             .catch(async err => {
                 if (err instanceof UserError) {
@@ -66,7 +66,7 @@ export class CmdHandlingService {
                 return HandlingResult.InternalError;
             });
     }   
-    private async tryInvokeCmdHandlerOrFail(msg: Ds.Message){
+    private async tryInvokeCmdHandlerOrFail(msg: ds.Message){
         const msgContent = msg.content.trim();
         if (msg.author.bot || !msgContent.startsWith(this.cmdPrefix)) {
             return HandlingResult.Skipped;

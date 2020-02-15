@@ -22,12 +22,12 @@ async function main() {
         import('@modules/app.service'),
         import('@modules/handlers/guild-member-add-handling.service'),
 
-        // Import all command handling services in order 
+        // Import all command handling services in order
         // to registrer them in dependency injection system
         import('@modules/handlers')
     ]);
     await Container.get(AppService).init().run();
-    
+
     // initialize event handlers
     Container.get(GuildMemberAddHandlingService);
 }
@@ -36,5 +36,3 @@ main().catch(err => {
     console.log('Bootstrapping error');
     console.error(err);
 });
-
-                                                                            

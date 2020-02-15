@@ -35,13 +35,13 @@ export class AppService {
         const { config, dsClient, log, debug, cmdHandling } = this;
         dsClient.once('ready', () => {
             cmdHandling.init(config.cmdHandlingParams);
-            
+
             debug.shutdownIfThrows(() => this.setMainGuildOrFail());
             void debug.shutdownIfThrows(() => this.setDefaultBotActivityOrFail())
                 .then(() => log.info(`🚀  Discord bot is listening.`));
 
             dsClient.setInterval(
-                () => this.tryUpdateBotAvatarOrFail().catch(log.error), 
+                () => this.tryUpdateBotAvatarOrFail().catch(log.error),
                 config.botUser.avatar.updateInterval
             );
         });
@@ -50,7 +50,7 @@ export class AppService {
             log.info(msg.content, 'Received Message: ');
             void await cmdHandling.tryHandleCmd(msg);
         });
-        
+
         return this;
     }
     private setMainGuildOrFail() {
@@ -86,4 +86,4 @@ export class AppService {
             )
             .finally(() => process.exit(0));
     });
-} 
+}

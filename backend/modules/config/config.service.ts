@@ -16,7 +16,7 @@ export class ConfigService {
         defaultStreamOpts: {
             bitrate:  128, // kbps
             volume:   1,   // [0, 1] percentage of volume
-            passes:   1,   // amount of times to send one audio packet
+            passes:   2,   // amount of times to send one audio packet
         },
         maxQueueSize:          20,
         activeTrackEmbedColor: 34047, // https://leovoel.github.io/embed-visualizer/
@@ -37,7 +37,7 @@ export class ConfigService {
     readonly cmdHandlingParams: CmdHandlingInitParams = {
         cmdPrefix: '!'
     };
-    
+
     readonly maxDsMessageLength = 2000;
 
     readonly evalUserId       = this.env.readEnvOrFail('EVAL_USER_ID');
@@ -59,4 +59,3 @@ export class ConfigService {
         thumbnail: { url: `https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f317c91e-d216-4cb4-92ad-a690a1792fba/d4qcyp5-ccd57935-27b2-4dcd-8da3-8796865be522.png/v1/fill/w_206,h_250,strp/i_just_don_t_know_what_went_wrong_by_toxickittycat_d4qcyp5-250t.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9OTg2IiwicGF0aCI6IlwvZlwvZjMxN2M5MWUtZDIxNi00Y2I0LTkyYWQtYTY5MGExNzkyZmJhXC9kNHFjeXA1LWNjZDU3OTM1LTI3YjItNGRjZC04ZGEzLTg3OTY4NjViZTUyMi5wbmciLCJ3aWR0aCI6Ijw9ODExIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.jgu-An5VgiWIhLEUxo5u1pKujheBDx09mtmN7AwDFKU` }
     };
 }
-

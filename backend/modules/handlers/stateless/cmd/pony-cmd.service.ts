@@ -14,8 +14,8 @@ export class PonyCmdService {
         private readonly log:           LoggingService
     ) {}
 
-    private readonly  footer = { 
-        text: 'Powered by derpibooru.org (dinky.js), cracked by Veetaha.' 
+    private readonly  footer = {
+        text: 'Powered by derpibooru.org (dinky.js), cracked by Veetaha.'
     };
 
     @CmdEndpoint({
@@ -36,6 +36,7 @@ export class PonyCmdService {
         if (media == null) {
             return msg.channel.send(this.createNotFoundReply(tags));
         }
+        this.log.info(media);
         this.log.info(`Got media full representation: ${media.representations.full}`);
         const defaultEmbed = new Ds.RichEmbed({
             title:       `Random pony for **${msg.member.displayName}**`,
@@ -43,7 +44,7 @@ export class PonyCmdService {
             footer:      this.footer,
             url:         `https://derpibooru.org/images/${media.id}`
         });
-        const url = `https:${media.representations.full}`;
+        const url = media.representations.full;
         return media.mimeType.startsWith('image')
             ? msg.channel.send(defaultEmbed.setImage(url))
             : msg.channel.send(defaultEmbed).then(() => msg.channel.send(url));

@@ -50,14 +50,14 @@
         "npm-check-updates": "^4.0.1",
         "ts-node-dev": "^1.0.0-pre.44",
         "tslint": "^6.0.0",
-        "typescript": "^3.7.5"
+        "typescript": "^3.8.3"
     },
     "dependencies": {
         "@hapi/joi": "^17.1.0",
         "axios": "^0.19.2",
         "canvas": "^2.6.1",
         "colors": "^1.4.0",
-        "dinky.js": "^0.8.1",
+        "dinky.js": "^1.0.0",
         "discord.js": "^11.5.1",
         "dotenv": "^8.2.0",
         "erlpack": "github:hammerandchisel/erlpack",
@@ -77,6 +77,7 @@
         "moment-duration-format": "^2.3.2",
         "multi-integer-range": "^4.0.8",
         "node-opus": "^0.3.3",
+        "node-pre-gyp": "^0.14.0",
         "reflect-metadata": "^0.1.13",
         "rxjs": "^6.5.4",
         "save-pixels": "^2.3.4",

@@ -17,18 +17,21 @@ export class DerpibooruService {
 
     /**
      * Fetches random pony media (image or video) based on the given tags (if there are any).
-     * 
+     *
      * Pre: Each string in `tags` doesn't contain coma `,`.
      * @param tags Array of tags to search pony media with.
      */
     @AppFreezeGuard
     async tryFetchRandomPonyMedia(tags: readonly string[]): Promise<Nullable<DerpibooruImg>> {
-        return this.dinkyApi.search(tags).random().catch(this.log.error);
+        return this.dinkyApi.search(tags).random().limit(1).then(
+            (res: any) => res.images[0],
+            this.log.error
+        );
     }
 
     /**
      * Fetches random pony image (only image, no videos e.g. `video/webm`)
-     * 
+     *
      * @param tags Array of tags to search pony image with.
      */
     async fetchRandomPonyImageOrFail(tags: readonly string[]): Promise<DerpibooruImg> {

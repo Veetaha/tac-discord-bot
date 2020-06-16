@@ -1,4 +1,4 @@
-FROM node:13.5.0
+FROM node:14.4.0
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:jonathonf/ffmpeg-4

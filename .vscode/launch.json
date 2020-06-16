@@ -8,15 +8,16 @@
             "type": "node",
             "request": "attach",
             "name": "Attach",
-            "skipFiles": [ 
+            "skipFiles": [
                 "timers.js",
-                "async_hooks.js", 
+                "async_hooks.js",
                 "inspector_async_hook.js",
-                "fs.js"
+                "fs.js",
+                "<node_internals>/**/*.js"
             ],
             "protocol": "inspector",
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}"
+            "remoteRoot": "${workspaceFolder}",
         }
     ]
 }

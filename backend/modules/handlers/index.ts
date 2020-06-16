@@ -1,6 +1,5 @@
 export * from './audio/cmd/bitrate-cmd.service';
 export * from './audio/cmd/music-cmd.service';
-export * from './audio/cmd/packet-passes-cmd.service';
 export * from './audio/cmd/pause-resume-skip-cmd.service';
 export * from './audio/cmd/volume-cmd.service';
 

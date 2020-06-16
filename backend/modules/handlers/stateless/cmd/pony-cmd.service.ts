@@ -38,8 +38,8 @@ export class PonyCmdService {
         }
         this.log.info(media);
         this.log.info(`Got media full representation: ${media.representations.full}`);
-        const defaultEmbed = new Ds.RichEmbed({
-            title:       `Random pony for **${msg.member.displayName}**`,
+        const defaultEmbed = new Ds.MessageEmbed({
+            title:       `Random pony for **${msg.member!.displayName}**`,
             description: `**Tags:** *${'```'}${media.tags}${'```'}*`,
             footer:      this.footer,
             url:         `https://derpibooru.org/images/${media.id}`
@@ -50,7 +50,7 @@ export class PonyCmdService {
             : msg.channel.send(defaultEmbed).then(() => msg.channel.send(url));
     }
     private createNotFoundReply(tags: string[]) {
-        return new Ds.RichEmbed({
+        return new Ds.MessageEmbed({
             title:       `Pony was not found.`,
             description: `Failed to fetch pony with tags ${'`'}[${tags.join(', ')}]${'`'}.`,
             footer: this.footer

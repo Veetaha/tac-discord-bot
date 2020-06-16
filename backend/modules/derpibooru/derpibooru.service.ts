@@ -11,8 +11,11 @@ import { DerpibooruImg } from './derpibooru.interfaces';
 export class DerpibooruService {
     private readonly dinkyApi: Obj<any>;
 
-    constructor(config: ConfigService, private readonly log: LoggingService) {
-        this.dinkyApi = require('dinky.js')({ key: config.derpibooruApiKey });
+    constructor(private readonly config: ConfigService, private readonly log: LoggingService) {
+        this.dinkyApi = require('dinky.js')({
+            key: config.derpibooru.apiKey,
+            filter:  config.derpibooru.filter,
+        });
     }
 
     /**
@@ -23,10 +26,13 @@ export class DerpibooruService {
      */
     @AppFreezeGuard
     async tryFetchRandomPonyMedia(tags: readonly string[]): Promise<Nullable<DerpibooruImg>> {
-        return this.dinkyApi.search(tags).random().limit(1).then(
-            (res: any) => res.images[0],
-            this.log.error
-        );
+        const tagsWithAlwaysOnOnes = [...new Set([...this.config.derpibooru.alwaysOnTags, ...tags]).values()];
+
+        return this.dinkyApi
+            .search(tagsWithAlwaysOnOnes)
+            .random()
+            .limit(1)
+            .then((res: any) => res.images[0], this.log.error);
     }
 
     /**

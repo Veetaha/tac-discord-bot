@@ -3,16 +3,15 @@ import once from 'lodash/once';
 import { Service } from "typedi";
 
 import { LoggingService     } from './logging/logging.service';
-import { ConfigService      } from './config/config.service';
 import { DsUtilsService     } from './handlers/ds-utils.service';
 import { CmdHandlingService } from './discord-cmd/cmd-handling.service';
 import { DebugService       } from './debug.service';
-import { DerpibooruService  } from './derpibooru/derpibooru.service';
+import { ConfigService, MainGuildConfig } from './config/config.service';
+import { unwrapNotNil } from 'ts-not-nil';
 
 @Service()
 export class AppService {
-    private mainGuild!:       ds.Guild;
-    private mainTextChannel!: ds.TextChannel;
+    private mainGuilds = new Map<string, [ds.Guild, ds.TextChannel, MainGuildConfig]>();
 
     constructor(
         private readonly log:           LoggingService,
@@ -20,15 +19,16 @@ export class AppService {
         private readonly config:        ConfigService,
         private readonly dsUtils:       DsUtilsService,
         private readonly cmdHandling:   CmdHandlingService,
-        private readonly derpibooruApi: DerpibooruService,
         private readonly dsClient:      ds.Client
     ) {}
 
-    getMainGuild() {
-        return this.mainGuild;
+    getMainGuilds() {
+        return this.mainGuilds;
     }
-    getMainTextChannel() {
-        return this.mainTextChannel;
+
+    getMainTextChannel(guildName: string) {
+        const [, channel] = unwrapNotNil(this.mainGuilds.get(guildName));
+        return channel;
     }
 
     init() {
@@ -36,37 +36,39 @@ export class AppService {
         dsClient.once('ready', () => {
             cmdHandling.init(config.cmdHandlingParams);
 
-            debug.shutdownIfThrows(() => this.setMainGuildOrFail());
+            debug.shutdownIfThrows(() => this.setMainsGuildsOrFail());
+
             void debug.shutdownIfThrows(() => this.setDefaultBotActivityOrFail())
                 .then(() => log.info(`🚀  Discord bot is listening.`));
-
-            dsClient.setInterval(
-                () => this.tryUpdateBotAvatarOrFail().catch(log.error),
-                config.botUser.avatar.updateInterval
-            );
         });
         dsClient.on('message', async msg => {
-            if (msg.member.user.id === this.dsClient.user.id) return;
+            // Skip messages from our bot itself
+            if (msg.member!.user.id === this.dsClient.user!.id) return;
+
             log.info(msg.content, 'Received Message: ');
             void await cmdHandling.tryHandleCmd(msg);
         });
 
         return this;
     }
-    private setMainGuildOrFail() {
-        const { dsClient, config: {mainGuild}, dsUtils } = this;
-        this.mainGuild = dsClient.guilds.find(guild => guild.name === mainGuild.name);
-        this.mainTextChannel = dsUtils.getGuildWritableTextChannelOrFail(
-            this.mainGuild, mainGuild.mainChannelName
-        );
+    private setMainsGuildsOrFail() {
+        this.dsClient.guilds.cache.forEach(guild => {
+            const guildConfig = this.config.mainGuilds.find(it => it.name == guild.name);
+            if (!guildConfig) {
+                throw new Error(
+                    `Main guild config was not found for guild '${guild}'.` +
+                    `Did you add it to MAIN_GUILDS env var?`
+                );
+            }
+            const textChannel = this.dsUtils.getGuildWritableTextChannelOrFail(
+                guild, guildConfig.mainChannelName
+            );
+            this.mainGuilds.set(guild.name, [guild, textChannel, guildConfig]);
+        });
     }
+
     private async setDefaultBotActivityOrFail(): Promise<void> {
-        await this.dsClient.user.setPresence(this.config.botUser.presence);
-    }
-    private async tryUpdateBotAvatarOrFail(): Promise<void> {
-        const {representations:{full}} = await this.derpibooruApi
-            .fetchRandomPonyImageOrFail(this.config.botUser.avatar.tags);
-        await this.dsClient.user.setAvatar(`https:${full}`);
+        await this.dsClient.user!.setPresence(this.config.botUser.presence);
     }
 
     async run() {
@@ -78,12 +80,14 @@ export class AppService {
 
     private readonly onExit = once(() => {
         // DISCONNECTED https://discord.js.org/#/docs/main/stable/typedef/Status
-        if (this.dsClient.status === 5) process.exit(0);
-        void this.dsClient.destroy()
-            .then(
-                () => this.log.info('Bot was successfully shutdown'),
-                this.log.createErrback(`Shutdown error`)
-            )
-            .finally(() => process.exit(0));
+        if (this.dsClient.ws.status === 5) process.exit(0);
+            try {
+                this.dsClient.destroy();
+                this.log.info('Bot was successfully shutdown');
+            } catch (err) {
+                this.log.error(err, "Shutdown error");
+            } finally {
+                process.exit(0)
+            }
     });
 }

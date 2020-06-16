@@ -10,8 +10,8 @@ import { AudioQueueService, Events as AQEvents } from "./audio-queue.service";
 @Service()
 export class MusicMgrService {
 
-    private sendEmbed(track: AudioTrack, embedOpts: ds.RichEmbedOptions) {
-        return track.msg.channel.send(new ds.RichEmbed(embedOpts)).catch(this.log.error);
+    private sendEmbed(track: AudioTrack, embedOpts: ds.MessageEmbedOptions) {
+        return track.msg.channel.send(new ds.MessageEmbed(embedOpts)).catch(this.log.error);
     }
 
     constructor(
@@ -47,7 +47,7 @@ export class MusicMgrService {
 
             .on(AQEvents.ConnectedToVoiceChannel, track => this.sendEmbed(track, {
                 description: `Connected to voice channel **"${
-                    track.msg.member.voiceChannel.name}"**.`
+                    track.msg.member!.voice.channel!.name}"**.`
             }));
 
     }
@@ -62,8 +62,8 @@ export class MusicMgrService {
         const playedDuration = this.formatDuration(this.audioPlayer.getCurrentStreamingTime());
         const totalTrackDuration = this.formatDuration(track.getDuration());
         return {
-            text: `ordered by ${member.displayName} (${playedDuration} / ${totalTrackDuration})`,
-            icon_url: member.user.displayAvatarURL
+            text: `ordered by ${member!.displayName} (${playedDuration} / ${totalTrackDuration})`,
+            icon_url: member!.user.displayAvatarURL()
         };
     }
 
@@ -76,8 +76,8 @@ export class MusicMgrService {
         const { member } = track.msg;
         const duration = this.formatDuration(track.getDuration());
         return {
-            text: `ordered by ${member.displayName}, duration: ${duration}`,
-            icon_url: member.user.displayAvatarURL
+            text: `ordered by ${member!.displayName}, duration: ${duration}`,
+            icon_url: member!.user.displayAvatarURL()
         };
     }
 

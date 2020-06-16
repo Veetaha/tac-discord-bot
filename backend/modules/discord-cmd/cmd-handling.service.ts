@@ -7,15 +7,14 @@ import { ErrorService   } from "@modules/error.service";
 import { UserError       } from "./errors/user-error.class";
 import { MetadataStorage } from "./meta/metadata-storage.class";
 import { CmdParamsParser } from './cmd-params-parser.class';
-import { UnknownCmdError } from '@modules/handlers/stateless/stateless.errors';
 import { AppFreezeGuard  } from '@modules/config/app-freeze-guard.decorator';
 
 
 export interface InitParams {
-    /** 
+    /**
      * Defines the string that command message must be prefixed with in order
      * to disambiguate them from regular user messages.
-     * E.g. `!`, `--`, `/` 
+     * E.g. `!`, `--`, `/`
      */
     cmdPrefix: string;
 }
@@ -23,7 +22,7 @@ export interface InitParams {
 export const enum HandlingResult {
     // Message was handled:
     Success,
-    UserError, 
+    UserError,
     InternalError,
     // Message not handled:
     Skipped
@@ -45,11 +44,11 @@ export class CmdHandlingService {
         return this;
     }
     /**
-     * Attempts to handle command sent by a guild member. 
+     * Attempts to handle command sent by a guild member.
      * Returns `true` if command was [un]successfully handled, `false` if message
      * didn't contain any command-like syntax.
      * This methods doesn't throw.
-     * 
+     *
      * @param msg Discord message received from `Ds.Client`.
      */
     @AppFreezeGuard
@@ -65,7 +64,7 @@ export class CmdHandlingService {
                 await msg.reply(`Internal error: ${errReport}`);
                 return HandlingResult.InternalError;
             });
-    }   
+    }
     private async tryInvokeCmdHandlerOrFail(msg: ds.Message){
         const msgContent = msg.content.trim();
         if (msg.author.bot || !msgContent.startsWith(this.cmdPrefix)) {
@@ -75,11 +74,11 @@ export class CmdHandlingService {
         const ctx = {msg, cmd, params};
         const handler = this.metadata.getHandlerForCmd(cmd);
 
-        if (handler == null) throw new UnknownCmdError(cmd);
+        if (handler == null) return HandlingResult.Skipped;
 
         await handler.handleMsgOrFail(ctx);
         return HandlingResult.Success;
-    }    
+    }
     private getCmdAndParamsOrFail(trimmedMsgContent: string) {
         const unprefixedMsg = trimmedMsgContent.slice(this.cmdPrefix.length);
         let cmdEndIndex = unprefixedMsg.search(/\s/);

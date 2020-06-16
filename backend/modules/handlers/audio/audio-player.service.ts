@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import Ds from 'discord.js';
 import { Service } from 'typedi';
-import { Nullable, RemoveKeys } from 'ts-typedefs';
+import { Nullable } from 'ts-typedefs';
 import { EventEmitter } from 'events';
 
 import { LoggingService } from '@modules/logging/logging.service';
@@ -26,10 +26,13 @@ export interface AudioPlayerService {
 export class AudioPlayerService extends EventEmitter {
 
     private curDispatcher?: Nullable<Ds.StreamDispatcher>;
-    private readonly streamOpts: Required<RemoveKeys<Ds.StreamOptions, 'seek'>>;
+    private readonly streamOpts: {
+        bitrate: number,
+        volume: number,
+    };
 
     constructor(
-        private readonly voiceMgr: VoiceMgrService, 
+        private readonly voiceMgr: VoiceMgrService,
         private readonly log: LoggingService,
         config: ConfigService
     ) {
@@ -40,11 +43,11 @@ export class AudioPlayerService extends EventEmitter {
     /**
      * Attempts to create youtube stream and pipe it to discord.
      * Ceases previous stream if it was active.
-     * 
+     *
      * Pre: client has `SPEAK` permissions.
-     * 
+     *
      * @param ytUrl Youtube video url to play audio from.
-     * 
+     *
      * @returns `true` if new connection to `track.msg.member.voiceChannel` was established,
      *          `false` if reused already existing connection.
      */
@@ -54,12 +57,12 @@ export class AudioPlayerService extends EventEmitter {
         const prevConn = this.voiceMgr.getConnection();
 
         const connection = await this.voiceMgr.connectToChannelOrFail(track.getVoiceChannel());
-        
+
         const dispatcher = track.streamOrFail(connection, this.streamOpts);
         // dispatcher.stream.resume()
         this.curDispatcher = dispatcher
             .once('start', () => this.emit(Events.TrackStart))
-            .once('end', reason => {
+            .once('finish', (reason: unknown) => {
                 this.log.info(`Dispather ended playing with reason (${reason})`);
                 if (this.curDispatcher === dispatcher) {
                     this.curDispatcher = null;
@@ -73,23 +76,13 @@ export class AudioPlayerService extends EventEmitter {
     }
 
     /** Tells whether player is currently streaming any audio track. */
-    isStreaming() { 
+    isStreaming() {
         return this.curDispatcher != null;
     }
 
-    /** Sets current packet passes to take when streaming.
-     *  It doesn't affect currently streaming track,
-     *  gets applied only for the next audio track. 
-     */
-    setPacketPasses(amount: number) {
-        this.streamOpts.passes = amount;
-    }
-    /** Returns current packet passes amount */
-    getPacketPasses() { return this.streamOpts.passes; }
-
-    /** 
-     * Sets player's bitrate. If there is a track currenly streaming, its bitrate gets updated. 
-     * 
+    /**
+     * Sets player's bitrate. If there is a track currenly streaming, its bitrate gets updated.
+     *
      * @param bitrate New bitrate value in `kbps`.
      */
     setBitrate(bitrate: number) {
@@ -106,11 +99,11 @@ export class AudioPlayerService extends EventEmitter {
     /**
      * Returns the time (in milliseconds) current audio track has been playing.
      * This time excludes pauses.
-     * 
+     *
      * Pre: `.isStreaming() === true`
      */
     getCurrentStreamingTime() {
-        return this.curDispatcher!.time;
+        return this.curDispatcher!.streamTime;
     }
 
     /**
@@ -122,7 +115,7 @@ export class AudioPlayerService extends EventEmitter {
     }
 
     /**
-     * Pauses currenly streamed audio track. 
+     * Pauses currenly streamed audio track.
      * Pre: `.isStreaming() === true`
      */
     pause() {
@@ -145,10 +138,10 @@ export class AudioPlayerService extends EventEmitter {
         this.curDispatcher!.resume();
     }
 
-    /** 
+    /**
      * Sets player's volume, if there is any track playing its volume gets updated.
      * Pre: `0 <= volume && volume <= 1`
-     * @param volume Precentage of volume to set (from 0 to 1). 
+     * @param volume Precentage of volume to set (from 0 to 1).
      */
     setVolume(volume: number) {
         this.streamOpts.volume = volume;
@@ -163,6 +156,5 @@ export class AudioPlayerService extends EventEmitter {
     getVolume() {
         return this.streamOpts.volume;
     }
-    
-}
 
+}

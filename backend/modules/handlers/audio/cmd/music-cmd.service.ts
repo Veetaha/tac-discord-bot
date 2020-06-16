@@ -1,7 +1,6 @@
 import Joi from 'typesafe-joi';
-import Ds from 'discord.js';
+import ds from 'discord.js';
 import { Service  } from "typedi";
-import { Nullable } from "ts-typedefs";
 
 import { CmdEndpoint     } from "@modules/discord-cmd/meta/cmd-endpoint.decorator";
 import { CmdHandlerFnCtx } from "@modules/discord-cmd/cmd.interfaces";
@@ -17,7 +16,7 @@ import { AudioPlayerService } from '../audio-player.service';
 export class MusicCmdService {
     constructor(
         private readonly musicMgr:    MusicMgrService,
-        private readonly audioQueue:  AudioQueueService, 
+        private readonly audioQueue:  AudioQueueService,
         private readonly audioPlayer: AudioPlayerService,
         private readonly config:      ConfigService
     ) {}
@@ -25,44 +24,46 @@ export class MusicCmdService {
 
     @CmdEndpoint({
         cmd: ['music', 'm'],
-        cooldownTime: 1000 * 5, 
+        cooldownTime: 1000 * 5,
         description:
              `Plays music or displays current music queue (if no parameters given).` +
              `If there is already a track playing your order is scheduled to be the last in the queue. ` +
              `Bot connects to your voice channel and plays music that you request.`,
-        params: { 
+        params: {
             minRequiredAmount: 0,
-            definition: [{ 
+            definition: [{
                 name: 'youtube_url_or_vid_name',
                 description: 'Youtube video url or video name to search.',
-                schema: Joi.string()
-            }] 
+                schema: Joi.array().items(Joi.string()),
+            }]
         }
     })
-    async onMusic({msg, params: [ytUrlOrQuery]}: CmdHandlerFnCtx<[Nullable<string>]>) {
-        if (ytUrlOrQuery == null) {
+    async onMusic({msg, params}: CmdHandlerFnCtx<string[]>) {
+        if (params.length === 0) {
             await this.sendAudioQueueInfo(msg);
             return;
         }
-        await this.audioQueue.streamOrEnqueueYtVidOrderOrFail({ ytUrlOrQuery, msg });   
+        const ytUrlOrQuery = params.join(" ");
+
+        await this.audioQueue.streamOrEnqueueYtVidOrderOrFail({ ytUrlOrQuery, msg });
     }
-    
-    private async sendAudioQueueInfo(msg: Ds.Message) {
+
+    private async sendAudioQueueInfo(msg: ds.Message) {
         if (this.audioQueue.isEmpty()) {
-            return msg.channel.send(new Ds.RichEmbed({
+            return msg.channel.send(new ds.MessageEmbed({
                 title: "Audio queue is empty.",
-                description: 
+                description:
                     "There are no tracks active or scheduled. Be first to order your " +
                     "favourite music!",
                 color: this.config.music.emptyQueueEmbedColor
             }));
         }
-        const messages: ReturnType<Ds.TextChannel['send']>[] = [];
+        const messages: Promise<ds.Message>[] = [];
         let i = 0;
         this.audioQueue.forEachTrackInQueue(audioTrack => {
-            messages.push(msg.channel.send(i === 0 
+            messages.push(msg.channel.send(i === 0
                 ? this.createActiveMusicEmbed(audioTrack)
-                : this.createScheduledMusicEmbed(audioTrack, i)
+                : this.createScheduledMusicEmbed(audioTrack, i),
             ));
             ++i;
         });
@@ -70,7 +71,7 @@ export class MusicCmdService {
     }
 
     private createActiveMusicEmbed(track: AudioTrack) {
-        return new Ds.RichEmbed({
+        return new ds.MessageEmbed({
             title: `**Active${this.audioPlayer.isPaused() ? ' (paused)**' : '**'}`,
             description: track.toMd(),
             color:     this.config.music.activeTrackEmbedColor,
@@ -80,7 +81,7 @@ export class MusicCmdService {
     }
 
     private createScheduledMusicEmbed(track: AudioTrack, queueIndex: number) {
-        return new Ds.RichEmbed({
+        return new ds.MessageEmbed({
             title: `#${queueIndex}`,
             description: track.toMd(),
             footer: this.musicMgr.createScheduledTrackFooter(track)

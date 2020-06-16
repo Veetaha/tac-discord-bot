@@ -27,16 +27,16 @@ export class UserError extends Error implements UserErrorParams {
         Object.assign(this, params);
     }
 
-    /** 
-     * virtual (may be overriden) 
+    /**
+     * virtual (may be overriden)
      * Creates an error message that will me forwarded to `msg.reply(...)`.
      */
     createDiscordReply() {
-        const opts: Ds.RichEmbedOptions = {
+        const opts: Ds.MessageEmbedOptions = {
             ...UserError.config.errorRichEmbedDefaultOptions,
             title:       this.title,
             description: this.description
         };
-        return new Ds.RichEmbed(opts);
+        return new Ds.MessageEmbed(opts);
     }
 }

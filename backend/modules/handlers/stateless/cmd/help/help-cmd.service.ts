@@ -38,29 +38,29 @@ export class HelpCmdService {
         }
     })
     async onHelp({msg, params: [cmd]}: CmdHandlerFnCtx<[Nullable<string>]>) {
-        return cmd != null 
+        return cmd != null
             ?  msg.channel.send(this.createHelpEmbed(this.getCommandHelpMd(
                 this.tryGetHandlerOrFail(cmd)
             )))
             :  Promise.all([
                 msg.channel.send(this.createHelpEmbed(this.getAllCommandsHelpMd())),
-                this.sendSyntaxRefference(msg), 
+                this.sendSyntaxRefference(msg),
             ]);
     }
     private createHelpEmbed(description: string) {
-        return new Ds.RichEmbed({
+        return new Ds.MessageEmbed({
             title: 'Bot command refference',
             footer: { text: 'All rights are not reserved.' },
             description
         });
     }
     private async sendSyntaxRefference(msg: Ds.Message) {
-        const opts: Ds.RichEmbedOptions = {
+        const opts: Ds.MessageEmbedOptions = {
             title: 'Bot syntax refference',
             footer: { text: 'All rights are not reserved.' },
             description: this.cmdSyntaxRefference
         };
-        await msg.channel.send(new Ds.RichEmbed(opts));
+        await msg.channel.send(new Ds.MessageEmbed(opts));
     }
 
     private tryGetHandlerOrFail(cmd: string) {
@@ -83,14 +83,14 @@ export class HelpCmdService {
     private getCommandHelpMd(cmdHandler: CmdHandlerWrapper) {
         const top     = `**${'```'}${cmdHandler.getUsageTemplate()}${'```'}**\n`;
         const aliases = `**❯ Aliases:** *${cmdHandler.cmd.join('*, *')}*\n`;
-        const cooldown  = cmdHandler.cooldownTime == null ? '' 
+        const cooldown  = cmdHandler.cooldownTime == null ? ''
             : `**❯ Cooldown**: ${'`'}${humanizeDuration(cmdHandler.cooldownTime)}${'`'}\n`;
-        const params  = cmdHandler.params == null ? '' 
+        const params  = cmdHandler.params == null ? ''
             : `**❯ Parameters:**:\n` + cmdHandler.params.definition
-                .reduce((pstr, param, i) => pstr + 
+                .reduce((pstr, param, i) => pstr +
                     ` ${'`'}${cmdHandler.params!.getParamUsageTemplate(i)}${'`'} ${param.description}\n`,
                     ''
                 );
-        return `${top}${cmdHandler.description}\n${aliases}${cooldown}${params}`;   
+        return `${top}${cmdHandler.description}\n${aliases}${cooldown}${params}`;
     }
 }

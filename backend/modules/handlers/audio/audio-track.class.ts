@@ -34,9 +34,12 @@ export class AudioTrack {
         }
         return ytdl.getInfo(ytUrlOrQuery).then(
             info => new AudioTrack(info, msg),
-            err  => Promise.reject(new YtVidSearchError(
-                `Failed to fetch info for "${ytUrlOrQuery}" (${err.message})`
-            ))
+            err  => {
+                console.log(err);
+                throw new YtVidSearchError(
+                    `Failed to fetch info for "${ytUrlOrQuery}" (${err.message})`
+                );
+            }
         );
     }
 
@@ -58,8 +61,9 @@ export class AudioTrack {
 
     private static readonly ytdlDownloadOpts: ytdl.downloadOptions = { quality: 'highestaudio' };
     getOriginalBitrateOrFail(): number {
+        // May throw
         const format = ytdl.chooseFormat(this.vidInfo.formats, AudioTrack.ytdlDownloadOpts);
-        if (format instanceof Error) throw format;
+
         return Number(format.bitrate) / 1000;
     }
     /**
@@ -72,12 +76,12 @@ export class AudioTrack {
      */
     streamOrFail(voiceConnection: ds.VoiceConnection, dsStreamOpts: ds.StreamOptions = {}) {
         const stream = ytdl.downloadFromInfo(this.vidInfo, AudioTrack.ytdlDownloadOpts);
-        return voiceConnection.playStream(stream, dsStreamOpts);
+        return voiceConnection.play(stream, dsStreamOpts);
         // https://stackoverflow.com/questions/51344574/improvring-discord-js-audio-quailty-for-my-bot
     }
 
     getVoiceChannel(): Nullable<ds.VoiceChannel> {
-        return this.msg.member.voiceChannel;
+        return this.msg.member!.voice.channel;
     }
 
 }

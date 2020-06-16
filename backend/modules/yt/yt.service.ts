@@ -14,8 +14,8 @@ export class YtService {
             code: yup.number(),
             errors: yup.array(),
             message: yup.string()
-        })
-    });
+        }).defined()
+    }).defined();
 
     constructor(private readonly config: ConfigService) {}
 

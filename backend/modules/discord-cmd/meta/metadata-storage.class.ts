@@ -5,7 +5,7 @@ import { CmdHandlerWrapper, CmdHandlerFn } from "../cmd-handler-wrapper.class";
 import { CmdParamsMetadata } from "./cmd-params-metadata.class";
 import { CmdMetadataApi } from "../cmd.interfaces";
 import { IteratorService } from "@modules/utils/iterator.service";
- 
+
 /**
  * Represents a singleton repository to store metadata about global application
  * command handling services.
@@ -21,14 +21,14 @@ export class MetadataStorage {
 
     /**
      * Stores metadata about the given `handlerFn` in metadata store.
-     *  
+     *
      * @param handlerServiceClass Class which prototype contains `hanlderFn`.
      * @param handlerFn Method that implements command handling business logic.
      * @param inEndpointMetadata Additional parameters that describe command handling logic.
      */
     registerHandler<THandlerCtx>(
         handlerServiceClass: Class<THandlerCtx>,
-        handlerFn:           CmdHandlerFn<THandlerCtx>, 
+        handlerFn:           CmdHandlerFn<THandlerCtx>,
         inEndpointMetadata:  CmdMetadataApi
     ) {
         const cmds = inEndpointMetadata.cmd.map(
@@ -36,18 +36,19 @@ export class MetadataStorage {
         );
         const handler = new CmdHandlerWrapper({
             ...inEndpointMetadata,
-            handlerFn: handlerFn.bind(Container.get(handlerServiceClass)),
-            params:    inEndpointMetadata.params == null 
-                ? null 
+            // Bruh I don't remember what I was doint here, thus just as any :D`
+            handlerFn: handlerFn.bind(Container.get(handlerServiceClass)) as any,
+            params:    inEndpointMetadata.params == null
+                ? null
                 : new CmdParamsMetadata(inEndpointMetadata.params)
         });
-        cmds.forEach(cmd => this.cmdToHandlerMap.set(cmd, handler));        
+        cmds.forEach(cmd => this.cmdToHandlerMap.set(cmd, handler));
     }
 
-    /** 
-     * Returns endpoint handler for the given command from stored metadata. 
-     * 
-     * @param cmd Bare command string without prefix to get handler for. 
+    /**
+     * Returns endpoint handler for the given command from stored metadata.
+     *
+     * @param cmd Bare command string without prefix to get handler for.
      *            All commands are case-insensitive.
      */
     getHandlerForCmd(cmd: string) {

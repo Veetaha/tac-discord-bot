@@ -6,6 +6,7 @@ import { DsUtilsService } from '@modules/handlers/ds-utils.service';
 
 import { LoggingService, LogType } from "./logging.service";
 import { ConfigService } from '@modules/config/config.service';
+import { assertNotNil } from 'ts-not-nil';
 
 /**
  * Production loggin service that sends log messages to discord development chat.
@@ -22,7 +23,8 @@ export class DsLoggingService extends LoggingService {
     ) {
         super();
         dsClient.once('ready', () => {
-            const guild     = dsClient.guilds.find(({name}) => name === logGuild.name);
+            const guild     = dsClient.guilds.cache.find(({name}) => name === logGuild.name);
+            assertNotNil(guild);
             this.logChannel = dsUtils.getGuildWritableTextChannelOrFail(guild, logGuild.channelName);
         });
     }

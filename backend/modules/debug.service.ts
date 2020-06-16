@@ -42,7 +42,7 @@ export class DebugService {
      * @param getSuspect Function that returns suspect to be checked for truthiness.
      */
     @NoopInProduction
-    assert(getSuspect: () =>unknown) {
+    assert(getSuspect: () => unknown) {
         const suspect = getSuspect();
         if (!suspect) {
             this.shutdown(suspect, `assertion failure`);

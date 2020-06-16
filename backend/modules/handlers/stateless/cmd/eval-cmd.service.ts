@@ -19,14 +19,14 @@ export class EvalCmdService {
 
     @CmdEndpoint({
         cmd: ['eval'],
-        description: 
+        description:
             'Evaluate JavaScript and return the result. Only lead developer (Veetaha) ' +
             'has access to this command.',
-        params: { 
+        params: {
             minRequiredAmount: 1,
             definition: [
                 {
-                    name: 'script', 
+                    name: 'script',
                     description: "JavaScript source code to evaluate at runtime."
                 }, {
                     name: 'obj_depth',
@@ -37,10 +37,10 @@ export class EvalCmdService {
         }
     })
     async onEval({msg, params: [script, depth = 1]}: CmdHandlerFnCtx<[string, Nullable<number>]>) {
-        if (this.config.evalUserId !== msg.member.id) {
+        if (this.config.evalUserId !== msg.member!.id) {
             throw new EvalPermissionError('Hackers have no rights to call eval.');
         }
-        const inspected = Util.inspect(await eval(script), { 
+        const inspected = Util.inspect(await eval(script), {
             showHidden: true, sorted: true, getters: true, depth
         });
         await this.dsUtils.sendMsgInChunksToFit(msg.channel, inspected);

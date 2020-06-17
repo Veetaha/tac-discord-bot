@@ -42,7 +42,7 @@ export class ConfigService {
         } as ds.PresenceData
     } as const;
     readonly cmdHandlingParams: CmdHandlingInitParams = {
-        cmdPrefix: '!'
+        cmdPrefix: this.env.readEnvOrFail('CMD_PREFIX'),
     };
 
     readonly maxDsMessageLength = 2000;

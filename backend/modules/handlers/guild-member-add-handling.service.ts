@@ -1,5 +1,6 @@
 import ds from 'discord.js';
 import gm from 'gm';
+import _ from 'lodash';
 const im = gm.subClass({ imageMagick: true });
 
 import { Service } from "typedi";
@@ -14,8 +15,6 @@ import { CanvasService  } from '@modules/canvas.service';
 
 @Service()
 export class GuildMemberAddHandlingService {
-    private readonly initialMemberRoles = new Map<string, ds.Role[]>();
-
     constructor(
         private readonly config:      ConfigService,
         private readonly app:         AppService,
@@ -24,6 +23,19 @@ export class GuildMemberAddHandlingService {
         private readonly canvasUtils: CanvasService,
         dsClient: ds.Client,
     ) {
+        dsClient.on('guildMemberAdd', newMember => Promise.all([
+            this.setNewMemberInitialRoles(newMember).catch(this.log.createErrback(
+                `Failed to set new member initial roles`
+            )),
+            this.sendWelcomePicToNewMember(newMember).catch(this.log.createErrback(
+                `Failed to send welcome picture to new member`
+            ))
+        ]));
+    }
+
+    private readonly initialMemberRoles = _.memoize((): Map<string, ds.Role[]> => {
+        const roles = new Map<string, ds.Role[]>();
+
         this.app.getMainGuilds().forEach(([guild, _, guildConfig]) => {
             const initialRoles = guildConfig.initialMemberRoles.map(
                 initialRole => {
@@ -37,34 +49,28 @@ export class GuildMemberAddHandlingService {
                     return role;
                 }
             );
-            this.initialMemberRoles.set(guild.name, initialRoles);
-
+            roles.set(guild.name, initialRoles);
             this.debug.assert(() => guild.me!.hasPermission('MANAGE_ROLES'));
         });
-
-        dsClient.on('guildMemberAdd', newMember => Promise.all([
-            this.setNewMemberInitialRoles(newMember).catch(this.log.createErrback(
-                `Failed to set new member initial roles`
-            )),
-            this.sendWelcomePicToNewMember(newMember).catch(this.log.createErrback(
-                `Failed to send welcome picture to new member`
-            ))
-        ]));
-    }
+        return roles;
+    });
 
     private async setNewMemberInitialRoles(newMember: ds.GuildMember | ds.PartialGuildMember) {
-        const initialRoles = this.initialMemberRoles.get(newMember.guild.name);
+        const initialMemberRoles = this.initialMemberRoles();
+
+
+        const initialRoles = initialMemberRoles.get(newMember.guild.name);
         if (!initialRoles) {
             return this.log.error(
-                `Member from unknown guild was added: ${newMember.guild.name} ` +
-                `Known guilds: ${[...this.app.getMainGuilds().values()].map(it => it[1].name)}`
+                `Member ${newMember.displayName} from unknown guild was added: ${newMember.guild.name} ` +
+                `Known guilds: ${[...this.app.getMainGuilds().values()].map(it => it[0].name)}`
             );
         }
 
         const newRoles = initialRoles.filter(role => !newMember.roles.cache.has(role.id));
-        this.log.info(newRoles, `Added new roles to new member "${newMember.displayName}"`);
 
         if (newRoles.length === 0) return;
+        this.log.info(newRoles, `Added new roles to new member "${newMember.displayName}"`);
 
         return newMember.roles.add(
             newRoles,

@@ -46,7 +46,7 @@
     },
     "dependencies": {
         "@hapi/joi": "^17.1.1",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "canvas": "^2.6.1",
         "colors": "^1.4.0",
         "dinky.js": "^1.0.0",
